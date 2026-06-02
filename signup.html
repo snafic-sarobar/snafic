@@ -48,16 +48,7 @@ button{width:100%;border:none;cursor:pointer;font-weight:700}
 .login-link a{color:#60a5fa;text-decoration:none}
 .main-wrap{display:flex;justify-content:center;padding:80px 20px 20px}
 .error{color:#ef4444;font-size:13px;margin-top:8px;min-height:20px;text-align:left;position:relative;z-index:2}
-.footer{width:100%;padding:20px 0;color:#cbd5e1;font-size:13px;text-align:left;position:relative;z-index:2}
-.footer-top{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;justify-content:flex-start;margin-bottom:8px}
-.footer-top a{color:#cbd5e1;text-decoration:none;font-size:13px;white-space:nowrap}
-.footer-top a:hover{text-decoration:underline}
-.footer-brand{font-weight:700;background:linear-gradient(90deg,#2563eb 50%,#ffffff 50%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.footer-bottom{display:flex;flex-wrap:wrap;gap:4px 8px;justify-content:flex-start;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06);align-items:center}
-.footer-bottom span{color:#94a3b8;font-size:12px}
-.footer-bottom .sep{color:#475569;font-size:10px}
-.footer-bottom .contact-link{color:#60a5fa;text-decoration:none;font-size:12px}
-.footer-bottom .contact-link:hover{text-decoration:underline}
+
 </style>
 </head>
 <body>
@@ -109,23 +100,7 @@ button{width:100%;border:none;cursor:pointer;font-weight:700}
     </div>
 </div>
 </div>
-<div class="footer">
-    <div class="footer-top">
-        <a href="index.html" class="footer-brand">Snafic</a>
-        <a href="about.html" data-i18n="about">About</a>
-        <a href="blog.html" data-i18n="blog">Blog</a>
-        <a href="privacy.html" data-i18n="privacy">Privacy</a>
-        <a href="terms.html" data-i18n="terms">Terms</a>
-    </div>
-    <div class="footer-bottom">
-        <span data-i18n="copyright">&copy; 2026 snafic.inc</span>
-        <span class="sep">&middot;</span>
-        <a href="mailto:snafic.official@gmail.com" class="contact-link">snafic.official@gmail.com</a>
-        <span class="sep">&middot;</span>
-        <span data-i18n="developed">Developed by</span> <strong style="color:#cbd5e1" data-i18n="sarobar">Sarobar Adhikari</strong>
-    </div>
-    <div id="langContainer" style="margin-top:8px"></div>
-</div>
+
 
 <script>
 async function signup() {
@@ -237,7 +212,6 @@ auth.onAuthStateChanged(async (user) => {
   }
 });
 
-buildLangDropdown("langContainer");
 applyTranslation();
 </script>
 </body>
