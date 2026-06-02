@@ -3,19 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title data-i18n="page_title_language">Snafix Language</title>
+<link rel="icon" type="image/svg+xml" href="favicon-raw.svg">
+<title data-i18n="page_title_language">Snafic Language</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="translations.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
 body{min-height:100vh;background:#0b1220;color:white}
+.navbar{position:relative;height:56px;display:flex;align-items:center;padding:0 12px;z-index:5}
 .bg{position:fixed;inset:0;background:linear-gradient(135deg,#08111f,#0f172a)}
 .bg::before,.bg::after{content:"";position:absolute;border-radius:50%;filter:blur(90px);animation:blobMove 10s ease-in-out infinite}
 .bg::before{width:380px;height:380px;background:#2563eb;left:-120px;top:-120px}
 .bg::after{width:320px;height:320px;background:#60a5fa;right:-80px;bottom:-80px;animation-delay:2s}
 @keyframes blobMove{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
-.logo{position:fixed;top:30px;left:50px;font-size:34px;font-weight:800;letter-spacing:2px;z-index:5;animation:logoPulse 4s ease-in-out infinite}
-.logo .w{color:#fff}.logo .b{color:#2563eb}
+.logo{position:absolute;top:8px;left:12px;height:50px;width:auto;background:none;cursor:pointer;display:flex;align-items:center}
+.logo img{height:50px;width:auto}
 @keyframes logoPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.85;transform:scale(.97)}}
 .wrapper{position:relative;z-index:2;max-width:800px;margin:0 auto;padding:100px 30px 30px}
 .content{background:rgba(255,255,255,.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:40px}
@@ -36,28 +38,28 @@ body{min-height:100vh;background:#0b1220;color:white}
 </head>
 <body>
 <div class="bg"></div>
-<div class="logo"><span class="w">Sna</span><span class="b">fix</span></div>
+<nav class="navbar"><div class="logo"><img src="logo/logo-transparent.png" alt="SNAFIC"></div></nav>
 <div class="wrapper">
 <div class="content">
-<a href="index.html" class="back" data-i18n="back">← Back to Snafix</a>
+<a href="index.html" class="back" data-i18n="back">← Back to Snafic</a>
 <h1 data-i18n="language_heading">Language Support</h1>
-<p data-i18n="language_p1">Snafix is built as a global platform, and language accessibility is one of its core priorities. The Language Support system ensures that users from different regions can access and interact with the platform comfortably in their preferred language.</p>
-<p data-i18n="language_p2">English serves as the primary system language, used for interface consistency, documentation, and global communication. However, Snafix is actively working toward expanding multilingual support to accommodate a wider audience. This includes translation systems, localized content, and region-specific customization.</p>
-<p data-i18n="language_p3">Language plays a critical role in user experience. A platform becomes more effective when users can understand and interact with it naturally. That is why Snafix is investing in scalable language infrastructure that allows seamless switching between languages without affecting performance or design.</p>
+<p data-i18n="language_p1">Snafic is built as a global platform, and language accessibility is one of its core priorities. The Language Support system ensures that users from different regions can access and interact with the platform comfortably in their preferred language.</p>
+<p data-i18n="language_p2">English serves as the primary system language, used for interface consistency, documentation, and global communication. However, Snafic is actively working toward expanding multilingual support to accommodate a wider audience. This includes translation systems, localized content, and region-specific customization.</p>
+<p data-i18n="language_p3">Language plays a critical role in user experience. A platform becomes more effective when users can understand and interact with it naturally. That is why Snafic is investing in scalable language infrastructure that allows seamless switching between languages without affecting performance or design.</p>
 <p data-i18n="language_p4">Future updates will include real-time translation features powered by artificial intelligence. These features will allow users to communicate across language barriers, making global interaction more natural and efficient.</p>
-<p data-i18n="language_p5">Snafix also aims to support culturally adaptive content, where not only language but also regional preferences and formats are considered. This ensures a more personalized experience for users across different parts of the world.</p>
-<p data-i18n="language_p6">In conclusion, the Language Support system is a step toward making Snafix truly global, inclusive, and accessible to everyone regardless of their linguistic background.</p>
+<p data-i18n="language_p5">Snafic also aims to support culturally adaptive content, where not only language but also regional preferences and formats are considered. This ensures a more personalized experience for users across different parts of the world.</p>
+<p data-i18n="language_p6">In conclusion, the Language Support system is a step toward making Snafic truly global, inclusive, and accessible to everyone regardless of their linguistic background.</p>
 </div>
 <div class="footer">
 <div class="links">
-<a href="index.html" style="font-weight:700;background:linear-gradient(90deg,#2563eb 50%,#ffffff 50%);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Snafix</a>
+<a href="index.html" style="font-weight:700;background:linear-gradient(90deg,#2563eb 50%,#ffffff 50%);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Snafic</a>
 <a href="about.html" data-i18n="about">About</a>
 <a href="blog.html" data-i18n="blog">Blog</a>
 <a href="privacy.html" data-i18n="privacy">Privacy</a>
 <a href="terms.html" data-i18n="terms">Terms</a>
 <a href="locations.html" data-i18n="locations">Locations</a>
 <a href="contact-uploading.html" data-i18n="contact_upload">Contact Uploading &amp; Non-Users</a>
-<a href="verified.html" data-i18n="verified">Snafix Verified</a>
+<a href="verified.html" data-i18n="verified">Snafic Verified</a>
 <a href="language.html" data-i18n="language_label">English</a>
 </div>
 <a href="mailto:snafic.official@gmail.com">snafic.official@gmail.com</a>

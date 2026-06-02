@@ -3,19 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Find Friends - Snafix</title>
+<link rel="icon" type="image/svg+xml" href="favicon-raw.svg">
+<title>Find Friends - Snafic</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script src="translations.js"></script>
+<script src="firebase-init.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
 body{min-height:100vh;background:#0b1220;color:white;display:flex;flex-direction:column;align-items:center;padding:40px 20px}
+.navbar{position:relative;height:56px;display:flex;align-items:center;padding:0 12px;z-index:5}
 .bg{position:fixed;inset:0;background:linear-gradient(135deg,#08111f,#0f172a)}
 .bg::before,.bg::after{content:"";position:absolute;border-radius:50%;filter:blur(90px);animation:blobMove 10s ease-in-out infinite}
 .bg::before{width:380px;height:380px;background:#2563eb;left:-120px;top:-120px}
 .bg::after{width:320px;height:320px;background:#60a5fa;right:-80px;bottom:-80px;animation-delay:2s}
 @keyframes blobMove{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
-.logo{position:fixed;top:24px;left:40px;font-size:30px;font-weight:800;letter-spacing:2px;z-index:5}
-.logo .w{color:#fff}.logo .b{color:#2563eb}
+.logo{position:absolute;top:8px;left:12px;height:50px;width:auto;background:none;cursor:pointer;display:flex;align-items:center}
+.logo img{height:50px;width:auto}
 .card{position:relative;overflow:hidden;width:540px;background:rgba(255,255,255,.08);backdrop-filter:blur(25px);border-radius:28px;border:1px solid rgba(255,255,255,.12);padding:32px;z-index:2;box-shadow:0 25px 60px rgba(0,0,0,.25);margin-bottom:20px}
 .card::before{content:"";position:absolute;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(96,165,250,.28),transparent 70%);top:-60px;right:-60px}
 .card h2{font-size:22px;margin-bottom:2px;position:relative;z-index:2}
@@ -52,18 +58,15 @@ body{min-height:100vh;background:#0b1220;color:white;display:flex;flex-direction
 </head>
 <body>
 <div class="bg"></div>
-<div class="logo"><span class="w">Sna</span><span class="b">fix</span></div>
-
+<nav class="navbar"><div class="logo"><img src="logo/logo-transparent.png" alt="SNAFIC"></div></nav>
 <div class="card">
   <h2 data-i18n="friends_title">Friends</h2>
   <p class="sub" data-i18n="friends_sub_title">Connect with people</p>
-
   <div class="tabs">
     <button class="tab active" onclick="switchTab('suggestions',this)" data-i18n="friends_suggestions">Suggestions</button>
-    <button class="tab" onclick="switchTab('requests',this)" id="requestsTab" data-i18n="friends_requests">Requests</button>
+    <button class="tab" onclick="switchTab('requests',this)" id="requestsTab" data-i18n="friends_requests">Requests <span class="badge" id="reqBadge">0</span></button>
     <button class="tab" onclick="switchTab('search',this)" data-i18n="friends_search">Search</button>
   </div>
-
   <div id="suggestionsPanel">
     <div class="user-list" id="suggestionsList"></div>
     <div class="btn-group" style="margin-top:16px;gap:10px;position:relative;z-index:2">
@@ -71,17 +74,14 @@ body{min-height:100vh;background:#0b1220;color:white;display:flex;flex-direction
         <button class="btn" style="flex:1;padding:12px;border-radius:14px;background:linear-gradient(135deg,#2563eb,#60a5fa);color:white;font-weight:700" onclick="next()" data-i18n="next">Next</button>
     </div>
   </div>
-
   <div id="requestsPanel" style="display:none">
     <div class="user-list" id="requestsList"></div>
   </div>
-
   <div id="searchPanel" style="display:none">
     <input id="searchInput" type="text" placeholder="Search by name or email..." oninput="searchUsers(this.value)" style="width:100%;padding:12px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.05);color:white;font-size:14px;outline:none;position:relative;z-index:2;margin-bottom:12px;font-family:inherit">
     <div class="user-list" id="searchResults"></div>
   </div>
 </div>
-
 <div class="bottom-links">
   <a href="home.html" data-i18n="back_home">&larr; Back to Home</a>
   <a href="chat.html" data-i18n="messages_link">Messages</a>
@@ -93,121 +93,168 @@ body{min-height:100vh;background:#0b1220;color:white;display:flex;flex-direction
 </div>
 
 <script>
-const email = localStorage.getItem("sn_user") ? JSON.parse(localStorage.getItem("sn_user")).email : null;
-if(!email) window.location.href = "index.html";
+let myUid = null;
+let myEmail = null;
+let sentRequests = new Set();
+let myFriendIds = new Set();
 
-let allUsers = [];
+auth.onAuthStateChanged(async (user) => {
+  if (!user) { window.location.href = "index.html"; return; }
+  myUid = user.uid;
+  myEmail = user.email;
+  loadData();
+});
 
-function loadSuggestions() {
-  fetch("/api/suggested-friends?email=" + encodeURIComponent(email))
-    .then(r=>r.json())
-    .then(data => {
-      const list = document.getElementById("suggestionsList");
-      if(!data.length){
-        list.innerHTML = '<div class="no-users" data-i18n="friends_no_suggestions">No suggestions right now</div>';
-        return;
-      }
-      list.innerHTML = data.map(u => {
-        const initial = u.name ? u.name.charAt(0).toUpperCase() : "?";
-        const avatar = u.photo ? '<img src="' + u.photo + '" alt="">' : initial;
-        return '<div class="user-row">' +
-          '<div class="avatar-sm">' + avatar + '</div>' +
-          '<div class="user-info"><div class="uname">' + u.name + '</div><div class="uemail">' + (u.username ? "@" + u.username : u.email) + '</div></div>' +
-          '<button class="btn btn-add" data-id="' + u.id + '" onclick="addFriend(this,' + u.id + ')">' + t("friends_add") + '</button>' +
-        '</div>';
-      }).join("");
-    });
+async function loadData() {
+  // Load friendships
+  const f1 = await db.collection("friendships").where("userId", "==", myUid).get();
+  f1.forEach(d => myFriendIds.add(d.data().friendId));
+  const f2 = await db.collection("friendships").where("friendId", "==", myUid).get();
+  f2.forEach(d => myFriendIds.add(d.data().userId));
+
+  // Load sent requests
+  const sr = await db.collection("friend_requests").where("fromUserId", "==", myUid).get();
+  sr.forEach(d => sentRequests.add(d.data().toUserId));
+
+  loadSuggestions();
+  loadRequests();
 }
 
-function loadRequests() {
-  fetch("/api/get-friend-requests?email=" + encodeURIComponent(email))
-    .then(r=>r.json())
-    .then(data => {
-      const list = document.getElementById("requestsList");
-      const badge = document.getElementById("requestsTab").querySelector(".badge");
-      if(badge) badge.textContent = data.length;
-      if(!data.length){
-        list.innerHTML = '<div class="no-users" data-i18n="friends_no_requests">No pending requests</div>';
-        return;
+async function loadSuggestions() {
+  const list = document.getElementById("suggestionsList");
+  try {
+    const snap = await db.collection("users").get();
+    const users = [];
+    snap.forEach(d => {
+      if (d.id !== myUid && !myFriendIds.has(d.id) && !sentRequests.has(d.id)) {
+        users.push({ id: d.id, ...d.data() });
       }
-      list.innerHTML = data.map(u => {
-        const initial = u.name.charAt(0).toUpperCase();
-        const avatar = u.photo ? '<img src="' + u.photo + '" alt="">' : initial;
-        return '<div class="user-row" id="req-'+u.reqId+'">' +
-          '<div class="avatar-sm">' + avatar + '</div>' +
-          '<div class="user-info"><div class="uname">' + u.name + '</div><div class="uemail">' + (u.username ? "@" + u.username : u.email) + '</div></div>' +
-          '<div class="btn-group">' +
-          '<button class="btn btn-accept" onclick="acceptRequest(this,' + u.id + ')">' + t("friends_accept") + '</button>' +
-          '<button class="btn btn-reject" onclick="rejectRequest(this,' + u.id + ')">' + t("friends_reject") + '</button>' +
-          '</div>' +
-        '</div>';
-      }).join("");
     });
+    // Shuffle and pick 10
+    const shuffled = users.sort(() => Math.random() - 0.5).slice(0, 10);
+    if (!shuffled.length) {
+      list.innerHTML = '<div class="no-users" data-i18n="friends_no_suggestions">No suggestions right now</div>';
+      return;
+    }
+    list.innerHTML = shuffled.map(u => {
+      const initial = u.name ? u.name.charAt(0).toUpperCase() : "?";
+      const avatar = u.photo ? '<img src="' + u.photo + '" alt="">' : initial;
+      return '<div class="user-row">' +
+        '<div class="avatar-sm">' + avatar + '</div>' +
+        '<div class="user-info"><div class="uname">' + u.name + '</div><div class="uemail">' + (u.username ? "@" + u.username : u.email) + '</div></div>' +
+        '<button class="btn btn-add" data-id="' + u.id + '" onclick="addFriend(this,\'' + u.id + '\')">' + t("friends_add") + '</button>' +
+      '</div>';
+    }).join("");
+  } catch (e) { list.innerHTML = '<div class="no-users">Error loading suggestions</div>'; }
 }
 
-function addFriend(btn, toUserId) {
+async function loadRequests() {
+  const list = document.getElementById("requestsList");
+  try {
+    const snap = await db.collection("friend_requests")
+      .where("toUserId", "==", myUid).where("status", "==", "pending").get();
+    const badge = document.getElementById("reqBadge");
+    const requests = [];
+    snap.forEach(d => requests.push({ docId: d.id, ...d.data() }));
+    badge.textContent = requests.length;
+    if (!requests.length) {
+      list.innerHTML = '<div class="no-users" data-i18n="friends_no_requests">No pending requests</div>';
+      return;
+    }
+    // Fetch sender names
+    const html = [];
+    for (const r of requests) {
+      const sender = await db.collection("users").doc(r.fromUserId).get();
+      const s = sender.data();
+      const initial = s.name.charAt(0).toUpperCase();
+      const avatar = s.photo ? '<img src="' + s.photo + '" alt="">' : initial;
+      html.push('<div class="user-row" id="req-'+r.docId+'">' +
+        '<div class="avatar-sm">' + avatar + '</div>' +
+        '<div class="user-info"><div class="uname">' + s.name + '</div><div class="uemail">' + (s.username ? "@" + s.username : s.email) + '</div></div>' +
+        '<div class="btn-group">' +
+        '<button class="btn btn-accept" onclick="acceptRequest(this,\'' + r.docId + '\',\'' + r.fromUserId + '\')">' + t("friends_accept") + '</button>' +
+        '<button class="btn btn-reject" onclick="rejectRequest(this,\'' + r.docId + '\')">' + t("friends_reject") + '</button>' +
+        '</div>' +
+      '</div>');
+    }
+    list.innerHTML = html.join("");
+  } catch (e) { list.innerHTML = '<div class="no-users">Error loading requests</div>'; }
+}
+
+async function addFriend(btn, toUserId) {
   btn.disabled = true;
   btn.textContent = t("friends_adding");
-  fetch("/api/send-friend-request", {
-    method: "POST", headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({email, toUserId})
-  })
-  .then(r=>r.json())
-  .then(d => {
-    if(d.error){ alert(d.error); btn.disabled = false; btn.textContent = t("friends_add"); return; }
+  try {
+    await db.collection("friend_requests").add({
+      fromUserId: myUid, toUserId, status: "pending",
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    sentRequests.add(toUserId);
     btn.className = "btn btn-add done";
     btn.textContent = t("friends_sent");
-  });
+  } catch (e) { alert(e.message); btn.disabled = false; btn.textContent = t("friends_add"); }
 }
 
-function acceptRequest(btn, fromUserId) {
+async function acceptRequest(btn, docId, fromUserId) {
   btn.disabled = true;
-  fetch("/api/accept-friend-request", {
-    method: "POST", headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({email, fromUserId})
-  })
-  .then(r=>r.json())
-  .then(d => {
-    if(d.error){ alert(d.error); btn.disabled = false; return; }
+  try {
+    await db.collection("friend_requests").doc(docId).delete();
+    await db.collection("friendships").add({ userId: myUid, friendId: fromUserId, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+    await db.collection("friendships").add({ userId: fromUserId, friendId: myUid, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+    myFriendIds.add(fromUserId);
     const row = btn.closest(".user-row");
     row.style.opacity = "0.3";
     row.innerHTML = '<div style="color:#22c55e;font-size:13px;padding:4px">' + t("friends_accepted") + '</div>';
     setTimeout(() => row.remove(), 1500);
     loadRequests();
-  });
+  } catch (e) { alert(e.message); btn.disabled = false; }
 }
 
-function rejectRequest(btn, fromUserId) {
+async function rejectRequest(btn, docId) {
   btn.disabled = true;
-  fetch("/api/reject-friend-request", {
-    method: "POST", headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({email, fromUserId})
-  })
-  .then(r=>r.json())
-  .then(() => {
+  try {
+    await db.collection("friend_requests").doc(docId).delete();
     const row = btn.closest(".user-row");
     row.style.opacity = "0.3";
     setTimeout(() => row.remove(), 300);
-  });
+  } catch (e) { alert(e.message); btn.disabled = false; }
 }
 
+let searchTimer = null;
 function searchUsers(q) {
   const list = document.getElementById("searchResults");
-  if(!q.trim()){ list.innerHTML = '<div class="no-users">Type to search</div>'; return; }
-  fetch("/api/search-users?email=" + encodeURIComponent(email) + "&q=" + encodeURIComponent(q))
-    .then(r=>r.json())
-    .then(data => {
-      if(!data.length){ list.innerHTML = '<div class="no-users" data-i18n="friends_no_results">No users found</div>'; return; }
-      list.innerHTML = data.map(u => {
+  if (!q.trim()) { list.innerHTML = '<div class="no-users">Type to search</div>'; return; }
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(async () => {
+    try {
+      const snap = await db.collection("users").get();
+      const results = [];
+      const lq = q.toLowerCase();
+      snap.forEach(d => {
+        if (d.id === myUid) return;
+        const u = d.data();
+        if ((u.name && u.name.toLowerCase().includes(lq)) || (u.email && u.email.toLowerCase().includes(lq))) {
+          results.push({ id: d.id, ...u });
+        }
+      });
+      if (!results.length) { list.innerHTML = '<div class="no-users" data-i18n="friends_no_results">No users found</div>'; return; }
+      list.innerHTML = results.map(u => {
         const initial = u.name.charAt(0).toUpperCase();
         const avatar = u.photo ? '<img src="' + u.photo + '" alt="">' : initial;
+        const isFriend = myFriendIds.has(u.id);
+        const isSent = sentRequests.has(u.id);
+        let btnHtml = '';
+        if (isFriend) btnHtml = '<span style="color:#22c55e;font-size:12px">Friends</span>';
+        else if (isSent) btnHtml = '<span style="color:#60a5fa;font-size:12px">Request sent</span>';
+        else btnHtml = '<button class="btn btn-add" onclick="addFriend(this,\'' + u.id + '\')">' + t("friends_add") + '</button>';
         return '<div class="user-row">' +
           '<div class="avatar-sm">' + avatar + '</div>' +
           '<div class="user-info"><div class="uname">' + u.name + '</div><div class="uemail">' + (u.username ? "@" + u.username : u.email) + '</div></div>' +
-          '<button class="btn btn-add" data-id="' + u.id + '" onclick="addFriend(this,' + u.id + ')">' + t("friends_add") + '</button>' +
+          btnHtml +
         '</div>';
       }).join("");
-    });
+    } catch (e) { list.innerHTML = '<div class="no-users">Search error</div>'; }
+  }, 300);
 }
 
 function switchTab(tab, btn) {
@@ -215,14 +262,11 @@ function switchTab(tab, btn) {
   btn.classList.add("active");
   document.querySelectorAll("[id$=Panel]").forEach(p => p.style.display = "none");
   document.getElementById(tab + "Panel").style.display = "block";
-  if(tab === "requests") loadRequests();
+  if (tab === "requests") loadRequests();
 }
 
-function skip() { window.location.href = "username.html"; }
-function next() { window.location.href = "username.html"; }
-
-loadSuggestions();
-loadRequests();
+function skip() { window.location.href = "profile-photo.html"; }
+function next() { window.location.href = "profile-photo.html"; }
 buildLangDropdown("langContainer");
 applyTranslation();
 </script>

@@ -3,19 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Choose Username - Snafix</title>
+<link rel="icon" type="image/svg+xml" href="favicon-raw.svg">
+<title>Choose Username - Snafic</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script src="translations.js"></script>
+<script src="firebase-init.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
 body{min-height:100vh;background:#0b1220;color:white;display:flex;align-items:center;justify-content:center;padding:20px}
+.navbar{position:relative;height:56px;display:flex;align-items:center;padding:0 12px;z-index:5}
 .bg{position:fixed;inset:0;background:linear-gradient(135deg,#08111f,#0f172a)}
 .bg::before,.bg::after{content:"";position:absolute;border-radius:50%;filter:blur(90px);animation:blobMove 10s ease-in-out infinite}
 .bg::before{width:380px;height:380px;background:#2563eb;left:-120px;top:-120px}
 .bg::after{width:320px;height:320px;background:#60a5fa;right:-80px;bottom:-80px;animation-delay:2s}
 @keyframes blobMove{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
-.logo{position:fixed;top:24px;left:40px;font-size:30px;font-weight:800;letter-spacing:2px;z-index:5}
-.logo .w{color:#fff}.logo .b{color:#2563eb}
+.logo{position:absolute;top:8px;left:12px;height:50px;width:auto;background:none;cursor:pointer;display:flex;align-items:center}
+.logo img{height:50px;width:auto}
 .card{position:relative;overflow:hidden;width:440px;background:rgba(255,255,255,.08);backdrop-filter:blur(25px);border-radius:28px;border:1px solid rgba(255,255,255,.12);padding:36px;z-index:2;box-shadow:0 25px 60px rgba(0,0,0,.25);text-align:center}
 .card::before{content:"";position:absolute;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(96,165,250,.28),transparent 70%);top:-60px;right:-60px}
 .card h2{font-size:24px;margin-bottom:4px;position:relative;z-index:2}
@@ -25,8 +31,7 @@ body{min-height:100vh;background:#0b1220;color:white;display:flex;align-items:ce
 .card input{width:100%;padding:16px 16px 16px 40px;border-radius:14px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:white;font-size:18px;outline:none;transition:.3s}
 .card input:focus{border-color:#60a5fa;box-shadow:0 0 20px rgba(96,165,250,.2)}
 .status{font-size:13px;margin-top:8px;min-height:22px;position:relative;z-index:2}
-.status.available{color:#22c55e}
-.status.taken{color:#ef4444}
+.status.available{color:#22c55e}.status.taken{color:#ef4444}
 .preview{display:flex;align-items:center;justify-content:center;gap:10px;margin:16px 0;position:relative;z-index:2}
 .preview .pill{background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.2);border-radius:20px;padding:8px 18px;font-size:14px;color:#cbd5e1}
 .checking{color:#94a3b8;font-size:13px;position:relative;z-index:2}
@@ -42,10 +47,10 @@ body{min-height:100vh;background:#0b1220;color:white;display:flex;align-items:ce
 </head>
 <body>
 <div class="bg"></div>
-<div class="logo"><span class="w">Sna</span><span class="b">fix</span></div>
+<nav class="navbar"><div class="logo"><img src="logo/logo-transparent.png" alt="SNAFIC"></div></nav>
 <div class="card">
     <h2 data-i18n="username_title">Choose your username</h2>
-    <p class="sub" data-i18n="username_sub">This will be your unique identity on Snafix</p>
+    <p class="sub" data-i18n="username_sub">This will be your unique identity on Snafic</p>
     <div class="input-wrap">
         <span class="at">@</span>
         <input id="usernameInput" type="text" maxlength="20" placeholder="username" autocomplete="off" oninput="checkUsername(this.value)">
@@ -58,78 +63,63 @@ body{min-height:100vh;background:#0b1220;color:white;display:flex;align-items:ce
     </div>
 </div>
 <script>
-const email = localStorage.getItem("sn_user") ? JSON.parse(localStorage.getItem("sn_user")).email : null;
-if(!email) window.location.href = "index.html";
+auth.onAuthStateChanged(u => { if (!u) window.location.href = "index.html"; });
 
 let available = false;
 let timer = null;
 
-function checkUsername(val) {
-    const status = document.getElementById("status");
-    const preview = document.getElementById("preview");
-    const saveBtn = document.getElementById("saveBtn");
-    saveBtn.disabled = true;
-    available = false;
+async function checkUsername(val) {
+  const status = document.getElementById("status");
+  const preview = document.getElementById("preview");
+  const saveBtn = document.getElementById("saveBtn");
+  saveBtn.disabled = true;
+  available = false;
 
-    if(!val || val.length < 3){
-        status.textContent = "";
-        status.className = "status";
-        preview.innerHTML = "";
-        return;
+  if (!val || val.length < 3) {
+    status.textContent = ""; status.className = "status";
+    preview.innerHTML = ""; return;
+  }
+
+  if (!/^[a-zA-Z0-9_]+$/.test(val)) {
+    status.textContent = "Only letters, numbers and underscore";
+    status.className = "status taken"; return;
+  }
+
+  status.textContent = "Checking...";
+  status.className = "status checking";
+  preview.innerHTML = '<div class="pill">@' + val + '</div>';
+
+  clearTimeout(timer);
+  timer = setTimeout(async () => {
+    try {
+      const q = await db.collection("users").where("username", "==", val).get();
+      if (q.empty) {
+        status.textContent = "Available!"; status.className = "status available";
+        available = true; saveBtn.disabled = false;
+      } else {
+        status.textContent = "Username taken"; status.className = "status taken";
+        available = false;
+      }
+    } catch (e) {
+      status.textContent = "Error checking"; status.className = "status taken";
     }
-
-    if(!/^[a-zA-Z0-9_]+$/.test(val)){
-        status.textContent = "Only letters, numbers and underscore";
-        status.className = "status taken";
-        return;
-    }
-
-    status.textContent = "Checking...";
-    status.className = "status checking";
-    preview.innerHTML = '<div class="pill">@' + val + '</div>';
-
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-        fetch("/api/check-username", {
-            method: "POST", headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({email, username: val})
-        })
-        .then(r=>r.json())
-        .then(d => {
-            if(d.available){
-                status.textContent = "Available!";
-                status.className = "status available";
-                available = true;
-                saveBtn.disabled = false;
-            } else {
-                status.textContent = d.message || "Username taken";
-                status.className = "status taken";
-                available = false;
-            }
-        });
-    }, 400);
+  }, 400);
 }
 
-function save() {
-    const username = document.getElementById("usernameInput").value.trim();
-    if(!available || !username) return;
-    fetch("/api/save-username", {
-        method: "POST", headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({email, username})
-    })
-    .then(r=>r.json())
-    .then(d => {
-        if(d.error) return alert(d.error);
-        let user = JSON.parse(localStorage.getItem("sn_user"));
-        user.username = username;
-        localStorage.setItem("sn_user", JSON.stringify(user));
-        window.location.href = "profile-photo.html";
-    });
+async function save() {
+  const username = document.getElementById("usernameInput").value.trim();
+  if (!available || !username || !auth.currentUser) return;
+  try {
+    await db.collection("users").doc(auth.currentUser.uid).update({ username });
+    let user = JSON.parse(localStorage.getItem("sn_user") || "{}");
+    user.username = username;
+    localStorage.setItem("sn_user", JSON.stringify(user));
+    window.location.href = "interests.html";
+  } catch (e) { alert(e.message); }
 }
 
-function skip() {
-    window.location.href = "profile-photo.html";
-}
+function skip() { window.location.href = "interests.html"; }
+applyTranslation();
 </script>
 </body>
 </html>

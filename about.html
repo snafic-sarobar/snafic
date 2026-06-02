@@ -3,19 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title data-i18n="page_title_about">About Snafix</title>
+<link rel="icon" type="image/svg+xml" href="favicon-raw.svg">
+<title data-i18n="page_title_about">About Snafic</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="translations.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
 body{min-height:100vh;background:#0b1220;color:white}
+.navbar{position:relative;height:56px;display:flex;align-items:center;padding:0 12px;z-index:5}
 .bg{position:fixed;inset:0;background:linear-gradient(135deg,#08111f,#0f172a)}
 .bg::before,.bg::after{content:"";position:absolute;border-radius:50%;filter:blur(90px);animation:blobMove 10s ease-in-out infinite}
 .bg::before{width:380px;height:380px;background:#2563eb;left:-120px;top:-120px}
 .bg::after{width:320px;height:320px;background:#60a5fa;right:-80px;bottom:-80px;animation-delay:2s}
 @keyframes blobMove{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
-.logo{position:fixed;top:30px;left:50px;font-size:34px;font-weight:800;letter-spacing:2px;z-index:5;animation:logoPulse 4s ease-in-out infinite}
-.logo .w{color:#fff}.logo .b{color:#2563eb}
+.logo{position:absolute;top:8px;left:12px;height:50px;width:auto;background:none;cursor:pointer;display:flex;align-items:center}
+.logo img{height:50px;width:auto}
 @keyframes logoPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.85;transform:scale(.97)}}
 .wrapper{position:relative;z-index:2;max-width:800px;margin:0 auto;padding:100px 30px 30px}
 .content{background:rgba(255,255,255,.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:40px}
@@ -38,30 +40,30 @@ body{min-height:100vh;background:#0b1220;color:white}
 </head>
 <body>
 <div class="bg"></div>
-<div class="logo"><span class="w">Sna</span><span class="b">fix</span></div>
+<nav class="navbar"><div class="logo"><img src="logo/logo-transparent.png" alt="SNAFIC"></div></nav>
 <div class="wrapper">
 <div class="content">
-<a href="index.html" class="back" data-i18n="back">← Back to Snafix</a>
-<h1 data-i18n="about_heading">About Snafix</h1>
-<p data-i18n="about_p1">Snafix is a next-generation digital platform designed to redefine how people interact, communicate, and experience technology in their daily lives. It is built as a unified ecosystem that combines social networking, instant messaging, media sharing, artificial intelligence, and location-based services into one seamless environment. Unlike traditional applications that focus on a single purpose, Snafix aims to integrate multiple digital experiences into a single, intelligent, and highly optimized system.</p>
-<p data-i18n="about_p2">The vision behind Snafix is to create a platform where users can not only consume content but also actively participate in building meaningful digital connections. In today's fast-paced world, users often switch between multiple apps for communication, entertainment, navigation, and productivity. Snafix solves this fragmentation by bringing everything together into one unified experience that is smooth, fast, and visually engaging.</p>
-<p data-i18n="about_p3">At its foundation, Snafix is built with modern web and application technologies that prioritize performance, scalability, and user experience. Every component of the platform is carefully designed to ensure responsiveness across all devices, including mobile phones, tablets, and desktop systems. The architecture follows modular principles, allowing continuous expansion and improvement without affecting existing functionality.</p>
-<p data-i18n="about_p4">One of the key strengths of Snafix is its focus on user-centric design. The interface is minimal yet powerful, featuring smooth animations, modern typography, and intuitive navigation. The goal is to make the platform feel natural and easy to use, even for first-time users. Every interaction is designed to provide feedback, clarity, and engagement, ensuring users always feel connected to the system.</p>
-<p data-i18n="about_p5">Snafix also integrates artificial intelligence features that enhance personalization and smart assistance. These AI-driven systems help users discover relevant content, improve communication efficiency, and automate certain tasks to save time. As technology evolves, Snafix continues to adopt new innovations to stay ahead of user expectations.</p>
-<p data-i18n="about_p6">The platform is also built with strong scalability in mind. As the user base grows, Snafix is designed to handle increased traffic, data processing, and feature expansion without compromising performance. Cloud-based infrastructure and optimized backend systems ensure reliability and speed across all regions.</p>
-<p data-i18n="about_p7">Beyond technology, Snafix is also about community. It encourages users to connect, share ideas, and express creativity in meaningful ways. Whether it is through messaging, content sharing, or interactive features, the platform promotes engagement and collaboration among users from different backgrounds and cultures.</p>
-<p data-i18n="about_p8">In conclusion, Snafix is more than just an application—it is a complete digital ecosystem designed for the future. It combines technology, design, intelligence, and community into a single platform that aims to transform how people experience the digital world.</p>
+<a href="index.html" class="back" data-i18n="back">← Back to Snafic</a>
+<h1 data-i18n="about_heading">About Snafic</h1>
+<p data-i18n="about_p1">Snafic is a next-generation digital platform designed to redefine how people interact, communicate, and experience technology in their daily lives. It is built as a unified ecosystem that combines social networking, instant messaging, media sharing, artificial intelligence, and location-based services into one seamless environment. Unlike traditional applications that focus on a single purpose, Snafic aims to integrate multiple digital experiences into a single, intelligent, and highly optimized system.</p>
+<p data-i18n="about_p2">The vision behind Snafic is to create a platform where users can not only consume content but also actively participate in building meaningful digital connections. In today's fast-paced world, users often switch between multiple apps for communication, entertainment, navigation, and productivity. Snafic solves this fragmentation by bringing everything together into one unified experience that is smooth, fast, and visually engaging.</p>
+<p data-i18n="about_p3">At its foundation, Snafic is built with modern web and application technologies that prioritize performance, scalability, and user experience. Every component of the platform is carefully designed to ensure responsiveness across all devices, including mobile phones, tablets, and desktop systems. The architecture follows modular principles, allowing continuous expansion and improvement without affecting existing functionality.</p>
+<p data-i18n="about_p4">One of the key strengths of Snafic is its focus on user-centric design. The interface is minimal yet powerful, featuring smooth animations, modern typography, and intuitive navigation. The goal is to make the platform feel natural and easy to use, even for first-time users. Every interaction is designed to provide feedback, clarity, and engagement, ensuring users always feel connected to the system.</p>
+<p data-i18n="about_p5">Snafic also integrates artificial intelligence features that enhance personalization and smart assistance. These AI-driven systems help users discover relevant content, improve communication efficiency, and automate certain tasks to save time. As technology evolves, Snafic continues to adopt new innovations to stay ahead of user expectations.</p>
+<p data-i18n="about_p6">The platform is also built with strong scalability in mind. As the user base grows, Snafic is designed to handle increased traffic, data processing, and feature expansion without compromising performance. Cloud-based infrastructure and optimized backend systems ensure reliability and speed across all regions.</p>
+<p data-i18n="about_p7">Beyond technology, Snafic is also about community. It encourages users to connect, share ideas, and express creativity in meaningful ways. Whether it is through messaging, content sharing, or interactive features, the platform promotes engagement and collaboration among users from different backgrounds and cultures.</p>
+<p data-i18n="about_p8">In conclusion, Snafic is more than just an application—it is a complete digital ecosystem designed for the future. It combines technology, design, intelligence, and community into a single platform that aims to transform how people experience the digital world.</p>
 </div>
 <div class="footer">
 <div class="links">
-<a href="index.html" class="footer-brand" style="font-weight:700;background:linear-gradient(90deg,#2563eb 50%,#ffffff 50%);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Snafix</a>
+<a href="index.html" class="footer-brand" style="font-weight:700;background:linear-gradient(90deg,#2563eb 50%,#ffffff 50%);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Snafic</a>
 <a href="about.html" data-i18n="about">About</a>
 <a href="blog.html" data-i18n="blog">Blog</a>
 <a href="privacy.html" data-i18n="privacy">Privacy</a>
 <a href="terms.html" data-i18n="terms">Terms</a>
 <a href="locations.html" data-i18n="locations">Locations</a>
 <a href="contact-uploading.html" data-i18n="contact_upload">Contact Uploading &amp; Non-Users</a>
-<a href="verified.html" data-i18n="verified">Snafix Verified</a>
+<a href="verified.html" data-i18n="verified">Snafic Verified</a>
 <a href="language.html" data-i18n="language_label">English</a>
 </div>
 <a href="mailto:snafic.official@gmail.com">snafic.official@gmail.com</a>

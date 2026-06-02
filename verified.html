@@ -3,19 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title data-i18n="page_title_verified">Snafix Verified</title>
+<link rel="icon" type="image/svg+xml" href="favicon-raw.svg">
+<title data-i18n="page_title_verified">Snafic Verified</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="translations.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
 body{min-height:100vh;background:#0b1220;color:white}
+.navbar{position:relative;height:56px;display:flex;align-items:center;padding:0 12px;z-index:5}
 .bg{position:fixed;inset:0;background:linear-gradient(135deg,#08111f,#0f172a)}
 .bg::before,.bg::after{content:"";position:absolute;border-radius:50%;filter:blur(90px);animation:blobMove 10s ease-in-out infinite}
 .bg::before{width:380px;height:380px;background:#2563eb;left:-120px;top:-120px}
 .bg::after{width:320px;height:320px;background:#60a5fa;right:-80px;bottom:-80px;animation-delay:2s}
 @keyframes blobMove{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
-.logo{position:fixed;top:30px;left:50px;font-size:34px;font-weight:800;letter-spacing:2px;z-index:5;animation:logoPulse 4s ease-in-out infinite}
-.logo .w{color:#fff}.logo .b{color:#2563eb}
+.logo{position:absolute;top:8px;left:12px;height:50px;width:auto;background:none;cursor:pointer;display:flex;align-items:center}
+.logo img{height:50px;width:auto}
 @keyframes logoPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.85;transform:scale(.97)}}
 .wrapper{position:relative;z-index:2;max-width:800px;margin:0 auto;padding:100px 30px 30px}
 .content{background:rgba(255,255,255,.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:40px}
@@ -36,29 +38,29 @@ body{min-height:100vh;background:#0b1220;color:white}
 </head>
 <body>
 <div class="bg"></div>
-<div class="logo"><span class="w">Sna</span><span class="b">fix</span></div>
+<nav class="navbar"><div class="logo"><img src="logo/logo-transparent.png" alt="SNAFIC"></div></nav>
 <div class="wrapper">
 <div class="content">
-<a href="index.html" class="back" data-i18n="back">← Back to Snafix</a>
-<h1 data-i18n="verified_heading">Snafix Verified</h1>
-<p data-i18n="verified_p1">The Snafix Verified system is designed to establish trust, authenticity, and credibility across the platform. In a digital environment where impersonation and misinformation can be common, verification plays a crucial role in ensuring that users can confidently interact with genuine profiles.</p>
+<a href="index.html" class="back" data-i18n="back">← Back to Snafic</a>
+<h1 data-i18n="verified_heading">Snafic Verified</h1>
+<p data-i18n="verified_p1">The Snafic Verified system is designed to establish trust, authenticity, and credibility across the platform. In a digital environment where impersonation and misinformation can be common, verification plays a crucial role in ensuring that users can confidently interact with genuine profiles.</p>
 <p data-i18n="verified_p2">A verified badge is awarded to users, creators, brands, or organizations that successfully complete the verification process. This process may include identity confirmation, account validation, and activity review to ensure authenticity. Once verified, users receive a visible badge that distinguishes them from unverified accounts.</p>
 <p data-i18n="verified_p3">The purpose of the verification system is not only to confirm identity but also to enhance platform safety. It helps prevent fake accounts, impersonation, and fraudulent activity, creating a more secure environment for communication and content sharing.</p>
 <p data-i18n="verified_p4">Verified users often enjoy additional benefits such as increased visibility, enhanced trust from other users, and access to advanced features within the platform. This encourages creators and organizations to maintain authenticity and engage responsibly with the community.</p>
-<p data-i18n="verified_p5">Snafix continuously improves its verification system to adapt to new challenges and technologies. As the platform grows, automated verification tools powered by artificial intelligence may be introduced to streamline the process while maintaining high accuracy.</p>
-<p data-i18n="verified_p6">We believe that trust is the foundation of any digital ecosystem. The Snafix Verified system is a key component in building that trust, ensuring that users can confidently interact, share, and collaborate within the platform.</p>
-<p data-i18n="verified_p7">In conclusion, verification is not just a badge—it is a symbol of reliability, integrity, and respect within the Snafix ecosystem.</p>
+<p data-i18n="verified_p5">Snafic continuously improves its verification system to adapt to new challenges and technologies. As the platform grows, automated verification tools powered by artificial intelligence may be introduced to streamline the process while maintaining high accuracy.</p>
+<p data-i18n="verified_p6">We believe that trust is the foundation of any digital ecosystem. The Snafic Verified system is a key component in building that trust, ensuring that users can confidently interact, share, and collaborate within the platform.</p>
+<p data-i18n="verified_p7">In conclusion, verification is not just a badge—it is a symbol of reliability, integrity, and respect within the Snafic ecosystem.</p>
 </div>
 <div class="footer">
 <div class="links">
-<a href="index.html" style="font-weight:700;background:linear-gradient(90deg,#2563eb 50%,#ffffff 50%);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Snafix</a>
+<a href="index.html" style="font-weight:700;background:linear-gradient(90deg,#2563eb 50%,#ffffff 50%);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Snafic</a>
 <a href="about.html" data-i18n="about">About</a>
 <a href="blog.html" data-i18n="blog">Blog</a>
 <a href="privacy.html" data-i18n="privacy">Privacy</a>
 <a href="terms.html" data-i18n="terms">Terms</a>
 <a href="locations.html" data-i18n="locations">Locations</a>
 <a href="contact-uploading.html" data-i18n="contact_upload">Contact Uploading &amp; Non-Users</a>
-<a href="verified.html" data-i18n="verified">Snafix Verified</a>
+<a href="verified.html" data-i18n="verified">Snafic Verified</a>
 <a href="language.html" data-i18n="language_label">English</a>
 </div>
 <a href="mailto:snafic.official@gmail.com">snafic.official@gmail.com</a>

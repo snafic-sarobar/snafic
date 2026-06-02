@@ -3,23 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Messages - Snafix</title>
+<link rel="icon" type="image/svg+xml" href="favicon-raw.svg">
+<title>Messages - Snafic</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script src="translations.js"></script>
+<script src="firebase-init.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
 body{min-height:100vh;background:#0b1220;color:white;display:flex}
 .bg{position:fixed;inset:0;background:linear-gradient(135deg,#08111f,#0f172a)}
 .container{display:flex;width:100%;height:100vh;position:relative;z-index:2}
-
-/* Sidebar */
 .sidebar{width:320px;background:rgba(255,255,255,.04);border-right:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;flex-shrink:0}
 .sidebar h2{padding:20px 20px 12px;font-size:20px}
 .sidebar .search-wrap{padding:0 20px 12px}
 .sidebar .search-wrap input{width:100%;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.05);color:white;font-size:13px;outline:none}
 .sidebar .search-wrap input:focus{border-color:#60a5fa}
 .sidebar .search-wrap input::placeholder{color:#475569}
-
 .friend-list{flex:1;overflow-y:auto;padding:0 12px}
 .friend-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;cursor:pointer;transition:.2s;margin-bottom:2px}
 .friend-item:hover{background:rgba(255,255,255,.06)}
@@ -31,9 +34,6 @@ body{min-height:100vh;background:#0b1220;color:white;display:flex}
 .friend-item .fi-info{flex:1;min-width:0}
 .friend-item .fi-name{font-size:14px;font-weight:600}
 .friend-item .fi-preview{font-size:12px;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.friend-item .fi-time{font-size:11px;color:#475569;flex-shrink:0}
-
-/* Chat area */
 .chat-area{flex:1;display:flex;flex-direction:column}
 .chat-header{padding:16px 24px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:12px}
 .chat-header .ch-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#60a5fa);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;overflow:hidden}
@@ -41,39 +41,28 @@ body{min-height:100vh;background:#0b1220;color:white;display:flex}
 .chat-header .ch-info .ch-name{font-size:15px;font-weight:600}
 .chat-header .ch-info .ch-status{font-size:12px;color:#64748b}
 .chat-header .ch-info .ch-status.online{color:#22c55e}
-
 .chat-msgs{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:8px}
 .msg{max-width:70%;padding:10px 16px;border-radius:16px;font-size:14px;line-height:1.5;word-wrap:break-word}
 .msg.sent{background:#2563eb;color:white;align-self:flex-end;border-bottom-right-radius:4px}
 .msg.recv{background:rgba(255,255,255,.08);color:#e2e8f0;align-self:flex-start;border-bottom-left-radius:4px}
 .msg .msg-time{font-size:10px;color:rgba(255,255,255,.5);margin-top:4px;text-align:right}
-
 .chat-input-wrap{padding:16px 24px;border-top:1px solid rgba(255,255,255,.06);display:flex;gap:10px}
 .chat-input-wrap input{flex:1;padding:12px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.05);color:white;font-size:14px;outline:none}
 .chat-input-wrap input:focus{border-color:#60a5fa}
 .chat-input-wrap input::placeholder{color:#475569}
 .chat-input-wrap button{padding:12px 20px;border:none;border-radius:14px;background:linear-gradient(135deg,#2563eb,#60a5fa);color:white;font-weight:600;cursor:pointer;transition:.3s}
 .chat-input-wrap button:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(37,99,235,.3)}
-
 .no-chat{flex:1;display:flex;align-items:center;justify-content:center;color:#475569;font-size:15px}
 .empty-state{text-align:center;padding:20px}
-.empty-state svg{width:60px;height:60px;fill:#475569;margin-bottom:16px}
 .empty-state p{color:#64748b;font-size:14px}
-
 .back-link{display:inline-flex;align-items:center;gap:6px;color:#64748b;text-decoration:none;font-size:13px;padding:12px 20px;transition:color .2s}
 .back-link:hover{color:#cbd5e1}
-
-@media(max-width:768px){
-  .sidebar{width:100%}
-  .chat-area{display:none}
-  .chat-area.show{display:flex;position:fixed;inset:0;z-index:10;background:#0b1220}
-}
+@media(max-width:768px){.sidebar{width:100%}.chat-area{display:none}.chat-area.show{display:flex;position:fixed;inset:0;z-index:10;background:#0b1220}}
 </style>
 </head>
 <body>
 <div class="bg"></div>
 <div class="container">
-  <!-- Sidebar -->
   <div class="sidebar">
     <a href="home.html" class="back-link">&larr; Home</a>
     <h2 data-i18n="chat_title_messages">Messages</h2>
@@ -82,11 +71,8 @@ body{min-height:100vh;background:#0b1220;color:white;display:flex}
     </div>
     <div class="friend-list" id="friendList"></div>
   </div>
-
-  <!-- Chat Area -->
   <div class="chat-area" id="chatArea">
     <div class="no-chat" id="noChat"><span data-i18n="chat_select">Select a friend to start chatting</span></div>
-
     <div id="chatActive" style="display:none;flex-direction:column;height:100%">
       <div class="chat-header" id="chatHeader"></div>
       <div class="chat-msgs" id="chatMessages"></div>
@@ -98,50 +84,70 @@ body{min-height:100vh;background:#0b1220;color:white;display:flex}
   </div>
 </div>
 
-<script src="/socket.io/socket.io.js"></script>
 <script>
-let user = JSON.parse(localStorage.getItem("sn_user"));
-if(!user) window.location.href="index.html";
-
-const socket = io();
+const rtdb = firebase.database();
 let friends = [];
 let selectedFriend = null;
 let onlineUsers = new Set();
+let messageUnsub = null;
+let myPresenceRef = null;
 
-socket.emit("user-online", user.id);
+auth.onAuthStateChanged(async (user) => {
+  if (!user) { window.location.href = "index.html"; return; }
+  // Set online status via RTDB
+  myPresenceRef = rtdb.ref("status/" + user.uid);
+  await myPresenceRef.set(true);
+  // Remove status on disconnect
+  myPresenceRef.onDisconnect().remove();
 
-socket.on("online-status", ({ userId, online }) => {
-  if(online) onlineUsers.add(userId); else onlineUsers.delete(userId);
-  updateOnlineIndicators();
+  // Listen to all online users
+  rtdb.ref("status").on("value", (snap) => {
+    onlineUsers.clear();
+    if (snap.exists()) {
+      snap.forEach(child => {
+        if (child.val() === true) onlineUsers.add(child.key);
+      });
+    }
+    updateOnlineIndicators();
+  });
+
+  loadFriends();
 });
 
-socket.on("new-message", (msg) => {
-  if(selectedFriend && (msg.senderId == selectedFriend.id || msg.receiverId == selectedFriend.id)){
-    appendMessage(msg);
-  }
-  updateFriendPreview(msg);
-});
+async function loadFriends() {
+  try {
+    const f1 = await db.collection("friendships").where("userId", "==", auth.currentUser.uid).get();
+    const ids1 = []; f1.forEach(d => ids1.push(d.data().friendId));
+    const f2 = await db.collection("friendships").where("friendId", "==", auth.currentUser.uid).get();
+    f2.forEach(d => ids1.push(d.data().userId));
 
-socket.on("messages-list", (msgs) => {
-  const container = document.getElementById("chatMessages");
-  container.innerHTML = "";
-  msgs.forEach(m => appendMessage(m));
-  container.scrollTop = container.scrollHeight;
-});
+    const uniqueIds = [...new Set(ids1)];
+    const friendList = [];
+    for (const id of uniqueIds) {
+      const snap = await db.collection("users").doc(id).get();
+      if (snap.exists) friendList.push({ id: snap.id, ...snap.data() });
+    }
+    friends = friendList;
 
-function loadFriends(){
-  fetch("/api/get-friends?email="+encodeURIComponent(user.email))
-    .then(r=>r.json())
-    .then(data=>{
-      friends = data;
-      // Also load last message per friend
-      renderFriendList(data);
-    });
+    // Also load last message per friend for preview
+    const previews = {};
+    for (const f of friends) {
+      const ms = await db.collection("messages")
+        .where("participants", "array-contains", auth.currentUser.uid)
+        .orderBy("createdAt", "desc").limit(1).get();
+      if (!ms.empty) {
+        const msg = ms.docs[0].data();
+        const otherId = msg.senderId === auth.currentUser.uid ? msg.receiverId : msg.senderId;
+        if (otherId === f.id) previews[f.id] = msg.message.substring(0, 30) + (msg.message.length > 30 ? '...' : '');
+      }
+    }
+    renderFriendList(friends, previews);
+  } catch (e) { console.error(e); }
 }
 
-function renderFriendList(list){
+function renderFriendList(list, previews) {
   const container = document.getElementById("friendList");
-  if(!list.length){
+  if (!list.length) {
     container.innerHTML = '<div class="empty-state"><p data-i18n="chat_no_friends">No friends yet. Add friends to start chatting.</p></div>';
     return;
   }
@@ -149,35 +155,39 @@ function renderFriendList(list){
     const initial = f.name.charAt(0).toUpperCase();
     const avatar = f.photo ? '<img src="'+f.photo+'" alt="">' : initial;
     const isOnline = onlineUsers.has(f.id);
-    return '<div class="friend-item" data-id="'+f.id+'" onclick="selectFriend('+f.id+')">'+
+    return '<div class="friend-item" data-id="'+f.id+'" onclick="selectFriend(\''+f.id+'\')">'+
       '<div class="av">'+avatar+'<span class="online-dot'+(isOnline?' show':'')+'"></span></div>'+
-      '<div class="fi-info"><div class="fi-name">'+f.name+'</div><div class="fi-preview" id="preview-'+f.id+'"></div></div>'+
+      '<div class="fi-info"><div class="fi-name">'+f.name+'</div><div class="fi-preview" id="preview-'+f.id+'">'+(previews && previews[f.id] ? previews[f.id] : '')+'</div></div>'+
     '</div>';
   }).join("");
 }
 
-function updateOnlineIndicators(){
+function updateOnlineIndicators() {
   document.querySelectorAll(".friend-item").forEach(el => {
-    const fid = parseInt(el.dataset.id);
+    const fid = el.dataset.id;
     const dot = el.querySelector(".online-dot");
-    if(dot) dot.classList.toggle("show", onlineUsers.has(fid));
+    if (dot) dot.classList.toggle("show", onlineUsers.has(fid));
   });
-  if(selectedFriend){
+  if (selectedFriend) {
     const status = document.getElementById("chatStatus");
-    if(status) status.textContent = onlineUsers.has(selectedFriend.id) ? "Online" : "Offline";
-    if(status) status.className = "ch-status" + (onlineUsers.has(selectedFriend.id) ? " online" : "");
+    if (status) {
+      status.textContent = onlineUsers.has(selectedFriend.id) ? "Online" : "Offline";
+      status.className = "ch-status" + (onlineUsers.has(selectedFriend.id) ? " online" : "");
+    }
   }
 }
 
-function selectFriend(friendId){
-  const f = friends.find(x => x.id == friendId);
-  if(!f) return;
+function selectFriend(friendId) {
+  const f = friends.find(x => x.id === friendId);
+  if (!f) return;
   selectedFriend = f;
+
   document.getElementById("noChat").style.display = "none";
   document.getElementById("chatActive").style.display = "flex";
 
   document.querySelectorAll(".friend-item").forEach(el => el.classList.remove("active"));
-  document.querySelector('.friend-item[data-id="'+friendId+'"]')?.classList.add("active");
+  const item = document.querySelector('.friend-item[data-id="'+friendId+'"]');
+  if (item) item.classList.add("active");
 
   const header = document.getElementById("chatHeader");
   const initial = f.name.charAt(0).toUpperCase();
@@ -185,47 +195,75 @@ function selectFriend(friendId){
   const online = onlineUsers.has(f.id);
   header.innerHTML = '<div class="ch-av">'+avatar+'</div><div class="ch-info"><div class="ch-name">'+f.name+'</div><div class="ch-status'+(online?' online':'')+'" id="chatStatus">'+(online?'Online':'Offline')+'</div></div>';
 
-  document.getElementById("chatMessages").innerHTML = '<div style="text-align:center;color:#475569;padding:20px;font-size:13px">Loading...</div>';
-  socket.emit("get-messages", { userId: user.id, otherUserId: f.id });
+  // Unsubscribe from previous listener
+  if (messageUnsub) messageUnsub();
 
-  // Mobile: show chat area
+  const container = document.getElementById("chatMessages");
+  container.innerHTML = '<div style="text-align:center;color:#475569;padding:20px;font-size:13px">Loading...</div>';
+
+  // Real-time listener
+  const myId = auth.currentUser.uid;
+  messageUnsub = db.collection("messages")
+    .where("participants", "array-contains", myId)
+    .orderBy("createdAt", "asc")
+    .onSnapshot((snap) => {
+      container.innerHTML = "";
+      let hasMsg = false;
+      snap.forEach(doc => {
+        const msg = doc.data();
+        // Only show messages between me and selected friend
+        if ((msg.senderId === myId && msg.receiverId === selectedFriend.id) ||
+            (msg.senderId === selectedFriend.id && msg.receiverId === myId)) {
+          appendMessage(msg);
+          hasMsg = true;
+        }
+      });
+      if (!hasMsg) container.innerHTML = '<div style="text-align:center;color:#475569;padding:20px;font-size:13px">No messages yet. Say hello!</div>';
+      container.scrollTop = container.scrollHeight;
+    });
+
   document.getElementById("chatArea").classList.add("show");
 }
 
-function appendMessage(msg){
+function appendMessage(msg) {
   const container = document.getElementById("chatMessages");
   const div = document.createElement("div");
-  const isSent = msg.senderId == user.id;
+  const isSent = msg.senderId === auth.currentUser.uid;
   div.className = "msg " + (isSent ? "sent" : "recv");
-  const time = msg.created_at ? new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
+  const time = msg.createdAt ? new Date(msg.createdAt.seconds * 1000 || msg.createdAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
   div.innerHTML = msg.message + '<div class="msg-time">'+time+'</div>';
   container.appendChild(div);
   container.scrollTop = container.scrollHeight;
 }
 
-function sendMessage(){
+async function sendMessage() {
   const input = document.getElementById("chatInput");
   const text = input.value.trim();
-  if(!text || !selectedFriend) return;
-  socket.emit("send-message", { senderId: user.id, receiverId: selectedFriend.id, message: text });
+  if (!text || !selectedFriend) return;
   input.value = "";
+
+  try {
+    const msg = {
+      senderId: auth.currentUser.uid,
+      receiverId: selectedFriend.id,
+      message: text,
+      participants: [auth.currentUser.uid, selectedFriend.id],
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    await db.collection("messages").add(msg);
+
+    // Update friend preview
+    const preview = document.getElementById("preview-"+selectedFriend.id);
+    if (preview) preview.textContent = text.substring(0, 30) + (text.length > 30 ? '...' : '');
+  } catch (e) { console.error(e); }
 }
 
-function updateFriendPreview(msg){
-  const otherId = msg.senderId == user.id ? msg.receiverId : msg.senderId;
-  const preview = document.getElementById("preview-"+otherId);
-  if(preview) preview.textContent = msg.message.substring(0,30) + (msg.message.length>30?'...':'');
-}
-
-function searchFriends(q){
-  const container = document.getElementById("friendList");
-  const filtered = friends.filter(f => f.name.toLowerCase().includes(q.toLowerCase()) || f.email.toLowerCase().includes(q.toLowerCase()));
+function searchFriends(q) {
+  const filtered = friends.filter(f =>
+    f.name.toLowerCase().includes(q.toLowerCase()) || f.email.toLowerCase().includes(q.toLowerCase())
+  );
   renderFriendList(filtered);
 }
-
-loadFriends();
-buildLangDropdown("langContainer");
-applyTranslation();
 </script>
 </body>
 </html>

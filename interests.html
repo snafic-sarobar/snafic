@@ -3,301 +3,147 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title data-i18n="page_title_interests">Snafix - Interests</title>
+<link rel="icon" type="image/svg+xml" href="favicon-raw.svg">
+<title data-i18n="page_title_interests">Snafic - Interests</title>
 <script src="translations.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="firebase-init.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Inter,sans-serif;
-}
-body{
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  background: radial-gradient(circle at top,#0b1220,#05070f);
-  color:white;
-  padding:20px;
-}
-body::before{
-  content:"";
-  position:absolute;
-  width:400px;height:400px;
-  background:#2563eb;
-  filter:blur(120px);
-  opacity:.25;
-  top:-100px;left:-100px;
-}
-body::after{
-  content:"";
-  position:absolute;
-  width:400px;height:400px;
-  background:#60a5fa;
-  filter:blur(120px);
-  opacity:.2;
-  bottom:-120px;right:-120px;
-}
-.logo{
-  position:fixed;top:24px;left:40px;
-  font-size:30px;font-weight:800;letter-spacing:2px;z-index:5;
-  animation:logoPulse 4s ease-in-out infinite;
-}
-.logo .w{color:#fff}.logo .b{color:#2563eb}
-@keyframes logoPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.85;transform:scale(.97)}}
-.container{
-  width:420px;
-  max-width:100%;
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.12);
-  backdrop-filter:blur(20px);
-  border-radius:24px;
-  padding:30px;
-  text-align:center;
-  box-shadow:0 20px 60px rgba(0,0,0,.5);
-  z-index:2;
-  position:relative;
-}
-.container::before{
-  content:"";
-  position:absolute;
-  width:200px;height:200px;
-  border-radius:50%;
-  background:radial-gradient(circle,rgba(96,165,250,.2),transparent 70%);
-  top:-60px;right:-60px;
-}
-h1{
-  font-size:24px;
-  margin-bottom:4px;
-  position:relative;z-index:2;
-}
-.sub{
-  color:#94a3b8;
-  font-size:13px;
-  margin-bottom:4px;
-  position:relative;z-index:2;
-}
-.count{
-  color:#60a5fa;
-  font-size:13px;
-  margin-bottom:18px;
-  position:relative;z-index:2;
-}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-  position:relative;z-index:2;
-}
-.card{
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.1);
-  padding:14px;
-  border-radius:14px;
-  cursor:pointer;
-  transition:.25s ease;
-  font-size:14px;
-  user-select:none;
-  position:relative;
-}
-.card:hover{
-  transform:translateY(-5px) scale(1.03);
-  background:rgba(96,165,250,.08);
-  box-shadow:0 10px 25px rgba(37,99,235,.15);
-}
-.card.selected{
-  border:1px solid #60a5fa;
-  background:rgba(37,99,235,.2);
-  box-shadow:0 0 20px rgba(96,165,250,.4);
-}
-.card.selected::after{
-  content:"✔";
-  position:absolute;
-  top:6px;
-  right:8px;
-  font-size:11px;
-  color:#60a5fa;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
+body{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:radial-gradient(circle at top,#0b1220,#05070f);color:white;padding:20px}
+body::before{content:"";position:absolute;width:400px;height:400px;background:#2563eb;filter:blur(120px);opacity:.25;top:-100px;left:-100px}
+body::after{content:"";position:absolute;width:400px;height:400px;background:#60a5fa;filter:blur(120px);opacity:.2;bottom:-120px;right:-120px}
+.navbar{position:relative;height:56px;display:flex;align-items:center;padding:0 12px;z-index:5}.logo{position:absolute;top:8px;left:12px;height:50px;width:auto;background:none;cursor:pointer;display:flex;align-items:center}
+.logo img{height:50px;width:auto}
+.container{width:480px;max-width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(20px);border-radius:24px;padding:30px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5);z-index:2;position:relative}
+.container::before{content:"";position:absolute;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(96,165,250,.2),transparent 70%);top:-60px;right:-60px}
+h1{font-size:24px;margin-bottom:4px;position:relative;z-index:2}
+.sub{color:#94a3b8;font-size:13px;margin-bottom:4px;position:relative;z-index:2}
+.count{color:#60a5fa;font-size:13px;margin-bottom:18px;position:relative;z-index:2}
+.grid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;position:relative;z-index:2}
+.card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:14px 22px;border-radius:16px;cursor:pointer;transition:.25s ease;font-size:14px;user-select:none;position:relative;white-space:nowrap;min-width:60px}
+.card:hover{transform:translateY(-5px) scale(1.03);background:rgba(96,165,250,.08);box-shadow:0 10px 25px rgba(37,99,235,.15)}
+.card.selected{border:1px solid #60a5fa;background:rgba(37,99,235,.2);box-shadow:0 0 20px rgba(96,165,250,.4)}
+.card.selected::after{content:"✔";position:absolute;top:6px;right:8px;font-size:11px;color:#60a5fa}
 .card.dragging{opacity:.5}
-.card .icon{
-  font-size:22px;
-  display:block;
-  margin-bottom:4px;
-}
-.btn-group{
-  display:flex;
-  gap:10px;
-  margin-top:18px;
-  position:relative;z-index:2;
-}
-.btn{
-  flex:1;
-  padding:13px;
-  border:none;
-  border-radius:12px;
-  font-weight:700;
-  font-size:14px;
-  cursor:pointer;
-  transition:.3s;
-}
-.btn-primary{
-  background:linear-gradient(135deg,#2563eb,#60a5fa);
-  color:white;
-}
-.btn-primary:hover:not(:disabled){
-  transform:scale(1.03);
-  box-shadow:0 10px 25px rgba(37,99,235,.4);
-}
-.btn-primary:disabled{
-  opacity:.4;
-  cursor:not-allowed;
-  transform:none;
-  box-shadow:none;
-}
-.btn-ghost{
-  background:transparent;
-  border:1px solid rgba(255,255,255,.15);
-  color:#cbd5e1;
-}
-.btn-ghost:hover{
-  background:rgba(255,255,255,.05);
-}
-.footer{
-  margin-top:16px;
-  font-size:12px;
-  color:#64748b;
-  text-align:center;
-  z-index:2;
-  position:relative;
-}
-.footer a{
-  color:#60a5fa;
-  text-decoration:none;
-  font-size:12px;
-}
+.card .icon{font-size:22px;display:block;margin-bottom:4px}
+.btn-group{display:flex;gap:10px;margin-top:18px;position:relative;z-index:2}
+.btn{flex:1;padding:13px;border:none;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;transition:.3s}
+.btn-primary{background:linear-gradient(135deg,#2563eb,#60a5fa);color:white}
+.btn-primary:hover:not(:disabled){transform:scale(1.03);box-shadow:0 10px 25px rgba(37,99,235,.4)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,.15);color:#cbd5e1}
+.btn-ghost:hover{background:rgba(255,255,255,.05)}
+.footer{margin-top:16px;font-size:12px;color:#64748b;text-align:center;z-index:2;position:relative}
+.footer a{color:#60a5fa;text-decoration:none;font-size:12px}
 #langContainer{display:inline-block;margin-top:0!important}
-@media(max-width:480px){
-  .container{padding:24px 16px;margin:0 10px}
-  .grid{gap:8px}
-}
+@media(max-width:480px){.container{padding:24px 16px;margin:0 10px}.grid{gap:8px}}
 </style>
 </head>
 <body>
-
-<div class="logo"><span class="w">Sna</span><span class="b">fix</span></div>
-
+<nav class="navbar"><div class="logo"><img src="logo/logo-transparent.png" alt="SNAFIC"></div></nav>
 <div class="container">
-
   <h1 data-i18n="interests_title">What interests you?</h1>
   <p class="sub" data-i18n="interests_sub">Pick 3 to personalize your experience</p>
   <p class="count" id="count">0 of 3 selected</p>
-
   <div class="grid" id="interestGrid"></div>
-
   <button class="btn btn-ghost" id="aiBtn" onclick="aiSuggest()" style="margin-top:12px">✨ AI Suggest Interests</button>
-
   <div class="btn-group">
     <button class="btn btn-ghost" onclick="skip()" data-i18n="skip">Skip</button>
     <button class="btn btn-primary" id="nextBtn" onclick="saveAndNext()" disabled data-i18n="next">Next</button>
   </div>
-
 </div>
-
 <div class="footer">
-  <div><a href="index.html" data-i18n="back">&larr; Back to Snafix</a></div>
+  <div><a href="index.html" data-i18n="back">&larr; Back to Snafic</a></div>
   <div id="langContainer"></div>
-  <div style="margin-top:6px">
-    <a href="mailto:snafic.official@gmail.com">snafic.official@gmail.com</a>
-    &nbsp;|&nbsp; <span data-i18n="developed">Developed by</span> <strong style="color:#94a3b8" data-i18n="sarobar">Sarobar Adhikari</strong>
-  </div>
 </div>
 
 <script>
-const userData = JSON.parse(localStorage.getItem("sn_user"));
-const email = userData ? userData.email : null;
-if(!email) window.location.href = "index.html";
+// Redirect if not logged in (check localStorage)
+if (!localStorage.getItem("sn_user")) window.location.href = "index.html";
+
+const DEFAULT_INTERESTS = [
+  ["🎵","Music"],["🎮","Gaming"],["📸","Photography"],["💻","Technology"],
+  ["✈️","Travel"],["🏀","Sports"],["🎨","Art"],["🍳","Cooking"],
+  ["📚","Reading"],["🎬","Movies"],["🧘","Fitness"],["💃","Dancing"],
+  ["🐱","Pets"],["🌿","Nature"],["🚗","Cars"],["🛒","Shopping"],
+  ["🎧","Podcasts"],["♟️","Chess"],["🏕️","Camping"],["🎭","Theater"]
+];
 
 let allInterests = [];
 let selected = new Set();
 
-fetch("/api/interests").then(r=>r.json()).then(data => {
-  allInterests = data;
+function loadInterests() {
+  let docs = DEFAULT_INTERESTS.map(([icon, name]) => ({ id: name, icon, name }));
+  allInterests = docs.sort(() => Math.random() - 0.5).slice(0, 10);
+
   const grid = document.getElementById("interestGrid");
-  data.forEach(interest => {
+  allInterests.forEach(interest => {
     const div = document.createElement("div");
     div.className = "card";
     div.draggable = true;
     div.innerHTML = '<span class="icon">' + interest.icon + '</span>' + interest.name;
     div.dataset.id = interest.id;
     div.onclick = () => toggle(interest.id, div);
-
-    // drag support
     div.addEventListener("dragstart", () => div.classList.add("dragging"));
     div.addEventListener("dragend", () => div.classList.remove("dragging"));
     div.addEventListener("dragover", e => e.preventDefault());
     div.addEventListener("drop", e => {
       e.preventDefault();
       const dragging = document.querySelector(".dragging");
-      if(dragging && dragging !== div) {
+      if (dragging && dragging !== div) {
         const rect = div.getBoundingClientRect();
-        const mid = rect.top + rect.height / 2;
-        if(e.clientY < mid) grid.insertBefore(dragging, div);
+        if (e.clientY < rect.top + rect.height / 2) grid.insertBefore(dragging, div);
         else grid.insertBefore(dragging, div.nextSibling);
       }
     });
-
     grid.appendChild(div);
   });
-});
+}
 
 function toggle(id, el) {
-  if(selected.has(id)){ selected.delete(id); el.classList.remove("selected"); }
-  else if(selected.size >= 3) return;
+  if (selected.has(id)) { selected.delete(id); el.classList.remove("selected"); }
+  else if (selected.size >= 3) return;
   else { selected.add(id); el.classList.add("selected"); }
   document.getElementById("count").textContent = selected.size + " of 3 selected";
   document.getElementById("nextBtn").disabled = selected.size !== 3;
 }
 
 function saveAndNext() {
-  if(selected.size !== 3) return;
-  const ids = [...selected].map(Number);
-  fetch("/api/save-interests", {
-    method: "POST", headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({email, interestIds: ids})
-  }).then(r=>r.json()).then(d => {
-    if(d.error) return alert(d.error);
-    window.location.href = "friends.html";
-  });
+  if (selected.size !== 3) return;
+  const ids = [...selected];
+  localStorage.setItem("sn_interests", JSON.stringify(ids));
+  window.location.href = "profile-photo.html";
 }
 
 function skip() {
-  fetch("/api/skip-onboarding", {
-    method: "POST", headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({email})
-  }).then(() => { window.location.href = "home.html"; });
+  let user = JSON.parse(localStorage.getItem("sn_user") || "{}");
+  user.onboarded = true;
+  localStorage.setItem("sn_user", JSON.stringify(user));
+  window.location.href = "home.html";
 }
 
-function aiSuggest(){
+function aiSuggest() {
   document.querySelectorAll(".card.selected").forEach(c => {
-    selected.delete(parseInt(c.dataset.id));
+    selected.delete(c.dataset.id);
     c.classList.remove("selected");
   });
   const shuffled = [...allInterests].sort(() => Math.random() - 0.5);
   shuffled.slice(0, 3).forEach(interest => {
-    if(!selected.has(interest.id) && selected.size < 3){
+    if (!selected.has(interest.id) && selected.size < 3) {
       selected.add(interest.id);
-      const el = document.querySelector(`[data-id="${interest.id}"]`);
-      if(el) el.classList.add("selected");
+      const el = document.querySelector('[data-id="' + interest.id + '"]');
+      if (el) el.classList.add("selected");
     }
   });
   document.getElementById("count").textContent = selected.size + " of 3 selected";
   document.getElementById("nextBtn").disabled = selected.size !== 3;
 }
 
+loadInterests();
 buildLangDropdown("langContainer");
 applyTranslation();
 </script>

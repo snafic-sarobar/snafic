@@ -3,20 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title data-i18n="page_title_settings">Settings — Snafix</title>
+<link rel="icon" type="image/svg+xml" href="favicon-raw.svg">
+<title data-i18n="page_title_settings">Settings — Snafic</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script src="translations.js"></script>
+<script src="firebase-init.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
 body{min-height:100vh;background:#0b1220;color:white;display:flex;align-items:center;justify-content:center;padding:20px}
+.navbar{position:relative;height:56px;display:flex;align-items:center;padding:0 12px;z-index:5}
 .bg{position:fixed;inset:0;background:linear-gradient(135deg,#08111f,#0f172a)}
 .bg::before,.bg::after{content:"";position:absolute;border-radius:50%;filter:blur(90px);animation:blobMove 10s ease-in-out infinite}
 .bg::before{width:380px;height:380px;background:#2563eb;left:-120px;top:-120px}
 .bg::after{width:320px;height:320px;background:#60a5fa;right:-80px;bottom:-80px;animation-delay:2s}
 @keyframes blobMove{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
-.logo{position:fixed;top:30px;left:50px;font-size:34px;font-weight:800;letter-spacing:2px;z-index:5;animation:logoPulse 4s ease-in-out infinite}
-.logo .w{color:#fff}.logo .b{color:#2563eb}
-@keyframes logoPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.85;transform:scale(.97)}}
+.logo{position:absolute;top:8px;left:12px;height:50px;width:auto;background:none;cursor:pointer;display:flex;align-items:center}
+.logo img{height:50px;width:auto}
 .settings-card{position:relative;overflow:hidden;width:480px;background:rgba(255,255,255,.08);backdrop-filter:blur(25px);border-radius:32px;border:1px solid rgba(255,255,255,.12);padding:40px;z-index:2;box-shadow:0 25px 60px rgba(0,0,0,.25)}
 .settings-card::before{content:"";position:absolute;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(96,165,250,.28),transparent 70%);top:-80px;right:-80px}
 .settings-card h2{font-size:26px;margin-bottom:4px;position:relative;z-index:2}
@@ -33,32 +38,15 @@ body{min-height:100vh;background:#0b1220;color:white;display:flex;align-items:ce
 .badge-unverified:hover{background:rgba(239,68,68,.25)}
 .back-link{display:block;margin-top:20px;color:#64748b;font-size:13px;position:relative;z-index:2}
 .back-link a{color:#60a5fa;text-decoration:none}
-
-/* Verify Modal */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);z-index:100;display:none;align-items:center;justify-content:center}
-.modal-overlay.show{display:flex}
-.modal{position:relative;width:380px;background:#0f172a;border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:32px;text-align:center;z-index:101;box-shadow:0 30px 80px rgba(0,0,0,.5)}
-.modal h3{font-size:20px;margin-bottom:4px}
-.modal p{color:#94a3b8;font-size:13px;margin-bottom:20px}
-.modal .code-input{width:100%;padding:16px;border-radius:14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.05);color:white;font-size:26px;font-weight:700;text-align:center;letter-spacing:8px;outline:none;transition:.3s}
-.modal .code-input:focus{border-color:#60a5fa;box-shadow:0 0 20px rgba(96,165,250,.2)}
-.modal .verify-btn{width:100%;padding:14px;border:none;border-radius:14px;margin-top:14px;cursor:pointer;font-weight:700;font-size:15px;color:white;background:linear-gradient(135deg,#2563eb,#60a5fa);transition:.35s}
-.modal .verify-btn:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(37,99,235,.35)}
-.modal .close-btn{position:absolute;top:14px;right:18px;background:none;border:none;color:#64748b;font-size:20px;cursor:pointer}
-.modal .msg{font-size:12px;margin-top:10px;min-height:20px}
-.modal .msg.error{color:#ef4444}
-.modal .msg.success{color:#22c55e}
 @media(max-width:540px){.settings-card{padding:24px;margin:0}.settings-card h2{font-size:22px}}
 </style>
 </head>
 <body>
 <div class="bg"></div>
-<div class="logo"><span class="w">Sna</span><span class="b">fix</span></div>
-
+<nav class="navbar"><div class="logo"><img src="logo/logo-transparent.png" alt="SNAFIC"></div></nav>
 <div class="settings-card">
     <h2 data-i18n="settings_heading">Settings</h2>
     <p class="sub" data-i18n="settings_sub">Manage your account and personal information.</p>
-
     <div class="settings-section">
         <h3 data-i18n="personal_info">Personal Info</h3>
         <div class="info-row">
@@ -76,132 +64,40 @@ body{min-height:100vh;background:#0b1220;color:white;display:flex;align-items:ce
             <span class="label" data-i18n="username_label">Username</span>
             <span class="value" id="displayUsername">—</span>
         </div>
-        <div class="info-row">
-            <span class="label" data-i18n="auth_label">Account Type</span>
-            <span class="value" id="displayAuth"></span>
-        </div>
     </div>
-
     <div class="back-link"><a href="home.html" data-i18n="back_home">&larr; Back to Home</a></div>
 </div>
 
-<!-- Verify Modal -->
-<div class="modal-overlay" id="verifyModal">
-    <div class="modal">
-        <button class="close-btn" onclick="closeVerify()">&times;</button>
-        <h3 data-i18n="verify_title">Enter the confirmation code</h3>
-        <p id="verifyEmailDisplay"></p>
-        <input class="code-input" id="codeInput" type="text" maxlength="6" inputmode="numeric" pattern="[0-9]*" placeholder="000000">
-        <button class="verify-btn" onclick="submitVerify()" data-i18n="verify_btn">Confirm</button>
-        <div class="msg" id="verifyMsg"></div>
-    </div>
-</div>
-
-<script src="translations.js"></script>
 <script>
-const user = JSON.parse(localStorage.getItem("sn_user"));
-if(!user){ window.location.href = "index.html"; }
+auth.onAuthStateChanged(async (user) => {
+  if (!user) { window.location.href = "index.html"; return; }
+  const snap = await db.collection("users").doc(user.uid).get();
+  if (!snap.exists) return;
+  const data = snap.data();
+  document.getElementById("displayName").textContent = data.name || user.displayName || "—";
+  document.getElementById("displayEmail").textContent = user.email;
+  document.getElementById("displayUsername").textContent = data.username || "—";
 
-const email = user.email;
-
-// Fetch full profile
-fetch("/api/user?email=" + encodeURIComponent(email))
-.then(r => r.json())
-.then(data => {
-    document.getElementById("displayName").textContent = data.name;
-    document.getElementById("displayEmail").textContent = data.email;
-    document.getElementById("displayUsername").textContent = data.username || "—";
-    document.getElementById("displayAuth").textContent = data.auth_provider || "direct";
-
-    const badge = document.getElementById("verifyBadge");
-    if(data.verified){
-        badge.innerHTML = '<span class="badge badge-verified" data-i18n="verified_badge">Verified</span>';
-    } else {
-        badge.innerHTML = '<span class="badge badge-unverified" onclick="openVerify()" data-i18n="verify_badge">Verify</span>';
-    }
-})
-.catch(() => {
-    document.getElementById("displayEmail").textContent = email;
-    document.getElementById("verifyBadge").innerHTML = '<span class="badge badge-unverified" onclick="openVerify()">Verify</span>';
+  const badge = document.getElementById("verifyBadge");
+  if (user.emailVerified) {
+    badge.innerHTML = '<span class="badge badge-verified" data-i18n="verified_badge">Verified</span>';
+  } else {
+    badge.innerHTML = '<span class="badge badge-unverified" onclick="sendVerifyEmail()" data-i18n="verify_badge">Verify</span>';
+  }
+  applyTranslation();
 });
 
-function openVerify(){
-    document.getElementById("verifyEmailDisplay").textContent = email;
-    document.getElementById("codeInput").value = "";
-    document.getElementById("verifyMsg").textContent = "";
-    document.getElementById("verifyMsg").className = "msg";
-    document.getElementById("verifyModal").classList.add("show");
+async function sendVerifyEmail() {
+  if (!auth.currentUser) return;
+  if (auth.currentUser.emailVerified) {
+    document.getElementById("verifyBadge").innerHTML = '<span class="badge badge-verified">Verified</span>';
+    return;
+  }
+  try {
+    await auth.currentUser.sendEmailVerification();
+    alert("Verification email sent! Check your inbox.");
+  } catch (e) { alert(e.message); }
 }
-
-function closeVerify(){
-    document.getElementById("verifyModal").classList.remove("show");
-}
-
-function submitVerify(){
-    const code = document.getElementById("codeInput").value.trim();
-    const msg = document.getElementById("verifyMsg");
-    if(!code || code.length !== 6 || isNaN(code)){
-        msg.textContent = "Please enter a valid 6-digit code";
-        msg.className = "msg error";
-        return;
-    }
-
-    fetch("/api/verify", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({email, code})
-    })
-    .then(r => r.json())
-    .then(data => {
-        if(data.error){
-            msg.textContent = data.error;
-            msg.className = "msg error";
-            return;
-        }
-        msg.textContent = "Email verified!";
-        msg.className = "msg success";
-        closeVerify();
-        document.getElementById("verifyBadge").innerHTML = '<span class="badge badge-verified">Verified</span>';
-    })
-    .catch(() => {
-        msg.textContent = "Server error. Try again.";
-        msg.className = "msg error";
-    });
-}
-
-// Auto-send code when modal opens (optional - resend button)
-// Actually, send code on open to be user-friendly
-function sendCodeOnOpen(){
-    fetch("/api/resend-code", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({email})
-    })
-    .then(r => r.json())
-    .then(data => {
-        const msg = document.getElementById("verifyMsg");
-        if(data.error){
-            msg.textContent = data.error;
-            msg.className = "msg error";
-        } else {
-            msg.textContent = "Code sent! Check your email.";
-            msg.className = "msg success";
-        }
-    })
-    .catch(() => {});
-}
-
-// Override openVerify to also send code
-const origOpen = openVerify;
-openVerify = function(){
-    document.getElementById("verifyEmailDisplay").textContent = email;
-    document.getElementById("codeInput").value = "";
-    document.getElementById("verifyMsg").textContent = "";
-    document.getElementById("verifyMsg").className = "msg";
-    document.getElementById("verifyModal").classList.add("show");
-    sendCodeOnOpen();
-};
-
 applyTranslation();
 </script>
 </body>
