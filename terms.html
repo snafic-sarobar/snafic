@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="page_title_terms">Snafix Terms</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="translations.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
+body{min-height:100vh;background:#0b1220;color:white}
+.bg{position:fixed;inset:0;background:linear-gradient(135deg,#08111f,#0f172a)}
+.bg::before,.bg::after{content:"";position:absolute;border-radius:50%;filter:blur(90px);animation:blobMove 10s ease-in-out infinite}
+.bg::before{width:380px;height:380px;background:#2563eb;left:-120px;top:-120px}
+.bg::after{width:320px;height:320px;background:#60a5fa;right:-80px;bottom:-80px;animation-delay:2s}
+@keyframes blobMove{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
+.logo{position:fixed;top:30px;left:50px;font-size:34px;font-weight:800;letter-spacing:2px;z-index:5;animation:logoPulse 4s ease-in-out infinite}
+.logo .w{color:#fff}.logo .b{color:#2563eb}
+@keyframes logoPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.85;transform:scale(.97)}}
+.wrapper{position:relative;z-index:2;max-width:800px;margin:0 auto;padding:100px 30px 30px}
+.content{background:rgba(255,255,255,.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:40px}
+.content h1{font-size:36px;margin-bottom:20px;background:linear-gradient(90deg,#60a5fa,#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.content p{color:#cbd5e1;font-size:15px;line-height:1.8;margin-bottom:16px}
+.back{display:inline-flex;align-items:center;gap:6px;color:#94a3b8;text-decoration:none;font-size:14px;margin-bottom:24px;transition:.3s}
+.back:hover{color:#60a5fa}
+.footer{margin-top:30px;padding:20px 0;text-align:left;color:#94a3b8;font-size:13px}
+.footer a{color:#60a5fa;text-decoration:none}
+.footer a:hover{text-decoration:underline}
+.footer .links{display:flex;flex-wrap:wrap;gap:8px 20px;margin-bottom:12px}
+.footer .links a{color:#cbd5e1;text-decoration:none;font-size:13px}
+.footer .links a:hover{text-decoration:underline}
+.footer .dev{margin-top:8px;color:#64748b}
+.footer .dev strong{color:#cbd5e1}
+@media(max-width:600px){.wrapper{padding:80px 16px 20px}.content{padding:24px}.content h1{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="logo"><span class="w">Sna</span><span class="b">fix</span></div>
+<div class="wrapper">
+<div class="content">
+<a href="index.html" class="back" data-i18n="back">← Back to Snafix</a>
+<h1 data-i18n="terms_heading">Terms &amp; Conditions</h1>
+<p data-i18n="terms_p1">By accessing or using Snafix, users agree to comply with the platform's terms and conditions. These terms are designed to ensure a safe, fair, and respectful environment for all users. They define the rules and responsibilities that govern user behavior, content usage, and platform interaction.</p>
+<p data-i18n="terms_p2">Users are expected to use the platform responsibly and ethically. Any activity that disrupts system performance, violates community guidelines, or harms other users is strictly prohibited. Snafix reserves the right to take appropriate action, including account suspension or removal, in cases of misuse.</p>
+<p data-i18n="terms_p3">Content shared on the platform must comply with legal and ethical standards. Users are responsible for ensuring that their content does not violate intellectual property rights, promote harmful behavior, or contain inappropriate material.</p>
+<p data-i18n="terms_p4">Snafix provides its services on an "as-is" basis. While we strive to maintain high performance and reliability, we do not guarantee uninterrupted access at all times. Maintenance, updates, or technical issues may occasionally affect service availability.</p>
+<p data-i18n="terms_p5">The platform may update its features, policies, or terms from time to time. Users are encouraged to review these terms regularly to stay informed about any changes. Continued use of Snafix after updates implies acceptance of the revised terms.</p>
+<p data-i18n="terms_p6">We also emphasize account security. Users are responsible for maintaining the confidentiality of their login credentials and must report any unauthorized access immediately.</p>
+<p data-i18n="terms_p7">In conclusion, these terms are designed to protect both users and the platform, ensuring a balanced and secure digital environment for everyone.</p>
+</div>
+<div class="footer">
+<div class="links">
+<a href="index.html" style="font-weight:700;background:linear-gradient(90deg,#2563eb 50%,#ffffff 50%);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Snafix</a>
+<a href="about.html" data-i18n="about">About</a>
+<a href="blog.html" data-i18n="blog">Blog</a>
+<a href="privacy.html" data-i18n="privacy">Privacy</a>
+<a href="terms.html" data-i18n="terms">Terms</a>
+<a href="locations.html" data-i18n="locations">Locations</a>
+<a href="contact-uploading.html" data-i18n="contact_upload">Contact Uploading &amp; Non-Users</a>
+<a href="verified.html" data-i18n="verified">Snafix Verified</a>
+<a href="language.html" data-i18n="language_label">English</a>
+</div>
+<a href="mailto:snafic.official@gmail.com">snafic.official@gmail.com</a>
+<div class="dev"><span data-i18n="developed">Developed by</span> <strong data-i18n="sarobar">Sarobar Adhikari</strong></div>
+<div id="langContainer" style="margin-top:12px"></div>
+</div>
+</div>
+<script>buildLangDropdown("langContainer");applyTranslation();</script>
+</body>
+</html>

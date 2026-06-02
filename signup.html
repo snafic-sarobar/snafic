@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snafix Sign Up</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="translations.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
+
+body{
+    min-height:100vh;
+    background:#0b1220;
+    color:white;
+}
+
+.bg{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(135deg,#08111f,#0f172a);
+}
+
+.bg::before,.bg::after{
+    content:"";position:absolute;border-radius:50%;filter:blur(90px);
+    animation:blobMove 10s ease-in-out infinite;
+}
+
+.bg::before{width:380px;height:380px;background:#2563eb;left:-120px;top:-120px}
+.bg::after{width:320px;height:320px;background:#60a5fa;right:-80px;bottom:-80px;animation-delay:2s}
+
+@keyframes blobMove{
+    0%,100%{transform:translate(0,0)}
+    50%{transform:translate(30px,-30px)}
+}
+
+.logo{
+    position:fixed;top:30px;left:50px;
+    font-size:34px;font-weight:800;letter-spacing:2px;z-index:5;
+    animation:logoPulse 4s ease-in-out infinite;
+}
+.logo .w{color:#ffffff}
+.logo .b{color:#2563eb}
+
+@keyframes logoPulse{
+    0%,100%{opacity:1;transform:scale(1)}
+    50%{opacity:.85;transform:scale(.97)}
+}
+
+.signup-card{
+    position:relative;
+    overflow:hidden;
+    width:480px;
+    background:rgba(255,255,255,.08);
+    backdrop-filter:blur(25px);
+    border-radius:32px;
+    border:1px solid rgba(255,255,255,.12);
+    padding:40px;
+    color:white;
+    box-shadow:0 25px 60px rgba(0,0,0,.25);
+    z-index:2;
+}
+
+.signup-card::before{
+    content:"";
+    position:absolute;
+    width:260px;height:260px;border-radius:50%;
+    background:radial-gradient(circle,rgba(96,165,250,.28),transparent 70%);
+    top:-80px;right:-80px;
+    animation:rotateGlow 8s linear infinite;
+}
+
+@keyframes rotateGlow{
+    from{transform:rotate(0deg)}
+    to{transform:rotate(360deg)}
+}
+
+.signup-card h2{
+    font-size:32px;font-weight:800;margin-bottom:4px;position:relative;z-index:2;
+}
+
+.signup-card > small{
+    color:#94a3b8;position:relative;z-index:2;display:block;
+    font-size:14px;margin-bottom:20px;
+}
+
+.row{
+    display:flex;gap:12px;
+}
+
+.row input{width:50%}
+
+input,select{
+    width:100%;padding:14px 16px;margin-top:12px;
+    border-radius:12px;border:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.05);color:white;
+    font-size:14px;outline:none;transition:.3s;
+}
+
+input:focus,select:focus{
+    border-color:#60a5fa;box-shadow:0 0 20px rgba(96,165,250,.2);
+}
+
+select option{background:#0f172a;color:white}
+
+label{
+    display:block;text-align:left;font-size:13px;font-weight:600;
+    margin-top:16px;color:#cbd5e1;position:relative;z-index:2;
+}
+
+.label-inline{
+    font-size:13px;font-weight:600;color:#cbd5e1;
+    margin-top:16px;margin-bottom:4px;text-align:left;position:relative;z-index:2;
+}
+
+.radio-group{
+    display:flex;gap:10px;margin-top:6px;position:relative;z-index:2;
+}
+
+.radio-group select{flex:1;margin-top:0}
+
+button{
+    width:100%;border:none;cursor:pointer;font-weight:700;
+}
+
+.primary{
+    margin-top:18px;padding:14px;border-radius:12px;
+    color:white;
+    background:linear-gradient(135deg,#2563eb,#60a5fa);
+    font-size:15px;transition:.35s;
+}
+
+.primary:hover{
+    transform:translateY(-3px);
+    box-shadow:0 12px 30px rgba(37,99,235,.35);
+}
+
+.legal{
+    font-size:11px;color:#94a3b8;line-height:1.6;
+    margin-top:16px;text-align:left;position:relative;z-index:2;
+}
+
+.legal a{color:#60a5fa;text-decoration:none}
+
+.notif-note{
+    font-size:12px;color:#94a3b8;margin-top:8px;text-align:left;position:relative;z-index:2;
+}
+
+.login-link{
+    text-align:center;margin-top:18px;color:#cbd5e1;position:relative;z-index:2;
+}
+
+.login-link a{color:#60a5fa;text-decoration:none}
+
+.main-wrap{
+    display:flex;
+    justify-content:center;
+    padding:80px 20px 20px;
+}
+.footer{
+    width:100%;
+    padding:20px 0;
+    color:#cbd5e1;
+    font-size:13px;
+    text-align:left;
+    position:relative;
+    z-index:2;
+}
+.footer-top{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 20px;
+    align-items:center;
+    justify-content:flex-start;
+    margin-bottom:8px;
+}
+.footer-top a{
+    color:#cbd5e1;
+    text-decoration:none;
+    font-size:13px;
+    white-space:nowrap;
+}
+.footer-top a:hover{text-decoration:underline}
+.footer-brand{
+    font-weight:700;
+    background:linear-gradient(90deg,#2563eb 50%,#ffffff 50%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+.footer-lang{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    cursor:pointer;
+}
+.footer-lang svg{
+    width:16px;height:16px;fill:#cbd5e1;
+}
+.footer-bottom{
+    display:flex;
+    flex-wrap:wrap;
+    gap:4px 8px;
+    justify-content:flex-start;
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px solid rgba(255,255,255,.06);
+    align-items:center;
+}
+.footer-bottom span{color:#94a3b8;font-size:12px}
+.footer-bottom .sep{color:#475569;font-size:10px}
+.footer-bottom .contact-link{color:#60a5fa;text-decoration:none;font-size:12px}
+.footer-bottom .contact-link:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+
+<div class="logo"><span class="w">Sna</span><span class="b">fix</span></div>
+
+<div class="main-wrap">
+<div class="signup-card">
+
+    <h2 data-i18n="signup_title">Get started on Snafix</h2>
+    <small data-i18n="signup_desc">Create an account to connect with friends, family and communities of people who share your interests.</small>
+
+    <div class="row">
+        <input id="firstName" type="text" data-i18n-placeholder="firstname_pl" placeholder="First name">
+        <input id="surname" type="text" data-i18n-placeholder="surname_pl" placeholder="Surname">
+    </div>
+
+    <div class="label-inline" data-i18n="dob_label">Date of birth</div>
+    <div class="row">
+        <select id="dobDay">
+            <option value="" data-i18n="day_pl">Day</option>
+            <script>for(let i=1;i<=31;i++)document.write('<option>'+i+'</option>')</script>
+        </select>
+        <select id="dobMonth">
+            <option value="" data-i18n="month_pl">Month</option>
+            <script>const m=getMonths();m.forEach((n,i)=>document.write('<option value="'+(i+1)+'">'+n+'</option>'))</script>
+        </select>
+        <select id="dobYear">
+            <option value="" data-i18n="year_pl">Year</option>
+            <script>for(let i=2026;i>=1900;i--)document.write('<option>'+i+'</option>')</script>
+        </select>
+    </div>
+
+    <div class="label-inline" data-i18n="gender_label">Gender</div>
+    <div class="radio-group">
+        <select id="gender">
+            <option value="" data-i18n="gender_pl">Select gender</option>
+            <option value="Male" data-i18n="male">Male</option>
+            <option value="Female" data-i18n="female">Female</option>
+            <option value="Other" data-i18n="other">Other</option>
+        </select>
+    </div>
+
+    <input id="emailInput" type="email" data-i18n-placeholder="contact_pl" placeholder="Mobile number or email address">
+
+    <div class="notif-note" data-i18n="notif_note">You may receive notifications from us.</div>
+
+    <input id="passInput" type="password" data-i18n-placeholder="pass_pl" placeholder="Password">
+
+    <div class="legal">
+        People who use our service may have uploaded your contact information to Snafix.
+        By tapping Submit, you agree to create an account and to Snafix's <a href="#">Terms</a>, <a href="#">Privacy Policy</a> and <a href="#">Cookie Policy</a>.
+        The <a href="#">Privacy Policy</a> describes the ways we can use the information we collect when you create an account. For example, we use this information to provide, personalise and improve our products, including ads.
+        Contact: <a href="mailto:snafic.official@gmail.com">snafic.official@gmail.com</a>
+    </div>
+
+    <button class="primary" onclick="signup()" data-i18n="submit_btn">Submit</button>
+
+    <div class="login-link">
+        <span data-i18n="login_text">Already have an account?</span> <a href="index.html" data-i18n="login_link">Login</a>
+    </div>
+
+</div>
+</div>
+
+<div class="footer">
+
+    <div class="footer-top">
+        <a href="index.html" class="footer-brand">Snafix</a>
+        <a href="about.html" data-i18n="about">About</a>
+        <a href="blog.html" data-i18n="blog">Blog</a>
+        <a href="privacy.html" data-i18n="privacy">Privacy</a>
+        <a href="terms.html" data-i18n="terms">Terms</a>
+        <a href="locations.html" data-i18n="locations">Locations</a>
+        <a href="contact-uploading.html" data-i18n="contact_upload">Contact Uploading &amp; Non-Users</a>
+        <a href="verified.html" data-i18n="verified">Snafix Verified</a>
+        <a href="language.html" class="footer-lang">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+            <span data-i18n="language_label">English</span>
+        </a>
+    </div>
+
+    <div class="footer-bottom">
+        <span data-i18n="copyright">&copy; 2026 snafic.inc</span>
+        <span class="sep">&middot;</span>
+        <a href="mailto:snafic.official@gmail.com" class="contact-link">snafic.official@gmail.com</a>
+        <span class="sep">&middot;</span>
+        <span data-i18n="developed">Developed by</span> <strong style="color:#cbd5e1" data-i18n="sarobar">Sarobar Adhikari</strong>
+    </div>
+
+    <div id="langContainer" style="margin-top:8px"></div>
+
+</div>
+
+<script>
+function signup(){
+
+    const firstName = document.getElementById("firstName").value;
+    const surname = document.getElementById("surname").value;
+    const email = document.getElementById("emailInput").value;
+    const day = document.getElementById("dobDay").value;
+    const month = document.getElementById("dobMonth").value;
+    const year = document.getElementById("dobYear").value;
+    const gender = document.getElementById("gender").value;
+
+    if(!firstName || !surname || !email || !day || !month || !year || !gender){
+        alert("Please fill in all fields");
+        return;
+    }
+
+    const name = firstName + " " + surname;
+    const password = document.getElementById("passInput").value;
+    if(!password){
+        alert("Please enter a password");
+        return;
+    }
+
+    fetch("/api/signup", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({name, email, password})
+    })
+    .then(r => r.json())
+    .then(data => {
+        if(data.error){
+            alert(data.error);
+            return;
+        }
+        localStorage.setItem("sn_user", JSON.stringify({
+            name, email, firstName, surname,
+            dob: year + "-" + month + "-" + day, gender
+        }));
+        var url = "verify.html?email=" + encodeURIComponent(email);
+        if(data.code) url += "&code=" + encodeURIComponent(data.code);
+        window.location.href = url;
+    })
+    .catch(() => alert("Server error"));
+}
+
+buildLangDropdown("langContainer");
+applyTranslation();
+</script>
+
+</body>
+</html>

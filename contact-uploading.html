@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="page_title_contact_upload">Snafix Contact & Uploading</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="translations.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
+body{min-height:100vh;background:#0b1220;color:white}
+.bg{position:fixed;inset:0;background:linear-gradient(135deg,#08111f,#0f172a)}
+.bg::before,.bg::after{content:"";position:absolute;border-radius:50%;filter:blur(90px);animation:blobMove 10s ease-in-out infinite}
+.bg::before{width:380px;height:380px;background:#2563eb;left:-120px;top:-120px}
+.bg::after{width:320px;height:320px;background:#60a5fa;right:-80px;bottom:-80px;animation-delay:2s}
+@keyframes blobMove{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
+.logo{position:fixed;top:30px;left:50px;font-size:34px;font-weight:800;letter-spacing:2px;z-index:5;animation:logoPulse 4s ease-in-out infinite}
+.logo .w{color:#fff}.logo .b{color:#2563eb}
+@keyframes logoPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.85;transform:scale(.97)}}
+.wrapper{position:relative;z-index:2;max-width:800px;margin:0 auto;padding:100px 30px 30px}
+.content{background:rgba(255,255,255,.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:40px}
+.content h1{font-size:36px;margin-bottom:20px;background:linear-gradient(90deg,#60a5fa,#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.content p{color:#cbd5e1;font-size:15px;line-height:1.8;margin-bottom:16px}
+.back{display:inline-flex;align-items:center;gap:6px;color:#94a3b8;text-decoration:none;font-size:14px;margin-bottom:24px;transition:.3s}
+.back:hover{color:#60a5fa}
+.contact-box{background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.25);border-radius:16px;padding:20px;text-align:center;margin-top:20px}
+.contact-box a{display:inline-block;color:#60a5fa;font-size:18px;font-weight:600;text-decoration:none;padding:12px 24px;border:1px solid rgba(96,165,250,.3);border-radius:12px;transition:.3s}
+.contact-box a:hover{background:rgba(96,165,250,.15);transform:translateY(-2px)}
+.footer{margin-top:30px;padding:20px 0;text-align:left;color:#94a3b8;font-size:13px}
+.footer a{color:#60a5fa;text-decoration:none}
+.footer a:hover{text-decoration:underline}
+.footer .links{display:flex;flex-wrap:wrap;gap:8px 20px;margin-bottom:12px}
+.footer .links a{color:#cbd5e1;text-decoration:none;font-size:13px}
+.footer .links a:hover{text-decoration:underline}
+.footer .dev{margin-top:8px;color:#64748b}
+.footer .dev strong{color:#cbd5e1}
+@media(max-width:600px){.wrapper{padding:80px 16px 20px}.content{padding:24px}.content h1{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="logo"><span class="w">Sna</span><span class="b">fix</span></div>
+<div class="wrapper">
+<div class="content">
+<a href="index.html" class="back" data-i18n="back">← Back to Snafix</a>
+<h1 data-i18n="contact_upload_heading">Contact &amp; Uploading</h1>
+<p data-i18n="contact_p1">Snafix believes that communication is the foundation of every successful digital platform. Our Contact system is designed to provide users with a direct, reliable, and efficient way to reach our team for support, feedback, partnerships, and general inquiries. We understand that users may face technical issues, have questions about features, or wish to collaborate with us, and we are committed to responding with professionalism and care.</p>
+<p data-i18n="contact_p2">Our support system is structured to handle different types of requests efficiently. Technical issues are prioritized to ensure users can quickly regain access to services. General inquiries are handled with detailed responses, while business or partnership requests are reviewed carefully by our development and management teams.</p>
+<p data-i18n="contact_p3">We encourage users to provide clear and detailed information when contacting us. This helps us understand the issue better and provide faster solutions. Every message is important to us, and we aim to maintain a high standard of communication quality across all interactions.</p>
+<p data-i18n="contact_p4">Snafix also values user feedback as an essential part of platform growth. Many of our features and improvements are inspired by suggestions from our community. We actively listen to user experiences and use this feedback to enhance performance, usability, and overall satisfaction.</p>
+<p data-i18n="contact_p5">Our contact channels are designed to be simple and accessible. Whether users are reaching out for support, reporting bugs, or exploring collaboration opportunities, we ensure that every query is directed to the appropriate team for timely handling.</p>
+<p data-i18n="contact_p6">In addition to direct support, Snafix is also building automated assistance systems powered by artificial intelligence. These systems will help users resolve common issues instantly and provide 24/7 support coverage, reducing wait times and improving efficiency.</p>
+<p data-i18n="contact_p7">We are committed to maintaining transparency in all communications. Users will always receive clear, honest, and helpful responses from our team. Building trust through communication is one of our highest priorities.</p>
+<div class="contact-box">
+<a href="mailto:snafic.official@gmail.com">📧 snafic.official@gmail.com</a>
+</div>
+<h2 style="font-size:28px;margin-top:30px;color:#60a5fa" data-i18n="uploading_heading">Uploading &amp; Non-Users</h2>
+<p data-i18n="uploading_p1">Snafix provides a structured access system that distinguishes between registered users and non-users to maintain platform quality, security, and content integrity. Non-users are allowed to explore limited features of the platform, giving them an opportunity to understand the system before creating an account.</p>
+<p data-i18n="uploading_p2">This approach helps new visitors experience the interface, view public content, and learn about the platform's capabilities without immediately requiring registration. It creates a smooth onboarding experience that encourages users to join naturally after exploring the platform.</p>
+<p data-i18n="uploading_p3">Uploading content is a privileged feature reserved for registered and verified users. This ensures that all shared content meets community guidelines, quality standards, and safety requirements. By restricting uploads, Snafix minimizes spam, misuse, and harmful content while maintaining a trustworthy environment.</p>
+<p data-i18n="uploading_p4">Users who wish to upload content must complete a registration process that may include basic identity verification and account setup. This helps maintain accountability and ensures that all content contributors are part of the trusted community.</p>
+<p data-i18n="uploading_p5">Non-users are still considered an important part of the ecosystem. They represent potential future users and are given a preview experience designed to showcase the value of the platform. This strategy helps improve conversion rates while maintaining security and stability.</p>
+<p data-i18n="uploading_p6">Snafix is also developing smart onboarding systems that guide non-users through the platform step-by-step, helping them understand features and benefits before signing up. These systems are designed to make the transition from visitor to user smooth and engaging.</p>
+<p data-i18n="uploading_p7">In conclusion, the Uploading &amp; Non-Users system is designed to balance openness with security, allowing exploration while maintaining strict control over content creation.</p>
+</div>
+<div class="footer">
+<div class="links">
+<a href="index.html" style="font-weight:700;background:linear-gradient(90deg,#2563eb 50%,#ffffff 50%);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Snafix</a>
+<a href="about.html" data-i18n="about">About</a>
+<a href="blog.html" data-i18n="blog">Blog</a>
+<a href="privacy.html" data-i18n="privacy">Privacy</a>
+<a href="terms.html" data-i18n="terms">Terms</a>
+<a href="locations.html" data-i18n="locations">Locations</a>
+<a href="contact-uploading.html" data-i18n="contact_upload">Contact Uploading &amp; Non-Users</a>
+<a href="verified.html" data-i18n="verified">Snafix Verified</a>
+<a href="language.html" data-i18n="language_label">English</a>
+</div>
+<a href="mailto:snafic.official@gmail.com">snafic.official@gmail.com</a>
+<div class="dev"><span data-i18n="developed">Developed by</span> <strong data-i18n="sarobar">Sarobar Adhikari</strong></div>
+<div id="langContainer" style="margin-top:12px"></div>
+</div>
+</div>
+<script>buildLangDropdown("langContainer");applyTranslation();</script>
+</body>
+</html>

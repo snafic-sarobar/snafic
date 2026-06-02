@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title data-i18n="page_title_home">Snafic — Home</title>
+<script src="translations.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
+
+body{
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  background: radial-gradient(circle at top,#0b1220,#05070f);
+  overflow:hidden;
+}
+
+body::before{
+  content:"";position:absolute;width:400px;height:400px;
+  background:#2563eb;filter:blur(120px);opacity:.25;
+  top:-100px;left:-100px;animation:move 8s infinite alternate;
+}
+
+body::after{
+  content:"";position:absolute;width:400px;height:400px;
+  background:#60a5fa;filter:blur(120px);opacity:.2;
+  bottom:-120px;right:-120px;animation:move2 10s infinite alternate;
+}
+
+@keyframes move{from{transform:translate(0,0)}to{transform:translate(80px,40px)}}
+@keyframes move2{from{transform:translate(0,0)}to{transform:translate(-80px,-40px)}}
+
+.card{
+  width:360px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.12);
+  backdrop-filter:blur(20px);
+  border-radius:22px;
+  padding:28px;
+  text-align:center;
+  color:white;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+  position:relative;
+  z-index:2;
+}
+
+.avatar{
+  width:80px;height:80px;border-radius:50%;margin:0 auto 12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;font-weight:800;
+  background:linear-gradient(135deg,#2563eb,#60a5fa);
+  box-shadow:0 0 25px rgba(96,165,250,.4);
+}
+
+h1{font-size:24px;margin-bottom:6px}
+.email{font-size:13px;color:#cbd5e1;margin-bottom:18px}
+
+.primary{
+  width:100%;padding:14px;border:none;border-radius:12px;
+  font-weight:800;background:linear-gradient(135deg,#2563eb,#60a5fa);
+  color:white;cursor:pointer;transition:.3s;
+}
+.primary:hover{transform:scale(1.03);box-shadow:0 10px 25px rgba(37,99,235,.4)}
+
+.secondary{
+  width:100%;padding:12px;margin-top:10px;border-radius:12px;
+  border:1px solid rgba(255,255,255,.2);background:transparent;
+  color:#cbd5e1;cursor:pointer;transition:.3s;
+}
+.secondary:hover{background:rgba(255,255,255,.05)}
+
+.verify-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-bottom:14px;font-size:12px;padding:6px 14px;
+  border-radius:20px;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);cursor:pointer;color:#fbbf24;transition:.3s;
+}
+.verify-badge:hover{background:rgba(255,255,255,.1)}
+.verify-badge.verified{color:#34d399;border-color:rgba(52,211,153,.3);cursor:default}
+.verify-badge.verified:hover{background:rgba(255,255,255,.05)}
+
+footer{
+  margin-top:20px;font-size:12px;color:#6b7280;text-align:center;z-index:2;
+}
+footer ul{display:flex;gap:12px;list-style:none;justify-content:center;margin-bottom:6px}
+footer a{color:#6b7280;text-decoration:none}
+footer a:hover{color:#cbd5e1}
+#langContainer{display:inline;margin-left:4px}
+#langContainer select{font-size:11px!important;padding:3px 24px 3px 8px!important;min-width:auto!important}
+
+/* ─── Modal ─── */
+.modal-overlay{
+  display:none;position:fixed;inset:0;z-index:100;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;
+}
+.modal-overlay.show{display:flex}
+
+.modal{
+  width:380px;max-width:92vw;
+  background:rgba(255,255,255,.08);backdrop-filter:blur(25px);
+  border-radius:24px;border:1px solid rgba(255,255,255,.12);
+  padding:32px;color:white;text-align:center;
+  box-shadow:0 25px 60px rgba(0,0,0,.3);
+  animation:modalIn .3s ease-out;
+}
+@keyframes modalIn{from{opacity:0;transform:scale(.92) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+.modal h2{font-size:20px;margin-bottom:4px}
+.modal p{color:#94a3b8;font-size:13px;margin-bottom:16px}
+.modal .code-input{
+  width:100%;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.06);color:white;font-size:28px;font-weight:800;
+  text-align:center;letter-spacing:10px;outline:none;transition:.3s;
+}
+.modal .code-input:focus{border-color:#60a5fa;box-shadow:0 0 20px rgba(96,165,250,.15)}
+.modal .code-input::placeholder{font-size:14px;letter-spacing:3px;color:#475569}
+.modal .modal-btn{
+  width:100%;padding:13px;margin-top:10px;border:none;border-radius:12px;
+  font-weight:700;font-size:14px;cursor:pointer;transition:.3s;
+}
+.modal .modal-btn.primary{background:linear-gradient(135deg,#2563eb,#60a5fa);color:white}
+.modal .modal-btn.primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(37,99,235,.3)}
+.modal .modal-btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.15);color:#cbd5e1;margin-top:6px}
+.modal .modal-btn.ghost:hover{background:rgba(255,255,255,.05)}
+.modal .modal-btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+.modal .status{margin-top:10px;font-size:13px;min-height:20px}
+
+/* ─── Reminder options ─── */
+.reminder-grid{
+  display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0;
+}
+.reminder-btn{
+  padding:8px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.04);color:#cbd5e1;cursor:pointer;font-size:13px;transition:.3s;
+}
+.reminder-btn:hover{background:rgba(96,165,250,.15);border-color:#60a5fa;color:white}
+.reminder-btn.active{background:rgba(96,165,250,.15);border-color:#60a5fa;color:white}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <div class="avatar" id="avatar">S</div>
+  <h1 id="title">Welcome Back</h1>
+  <div class="email" id="email">user@example.com</div>
+
+  <div class="verify-badge" id="verifyBadge" onclick="openVerifyModal()">
+    <span id="verifyIcon">&#9679;</span>
+    <span id="verifyLabel">Verify Email</span>
+  </div>
+
+  <button class="primary" onclick="continueUser()" data-i18n="continue_btn">Continue</button>
+  <button class="secondary" onclick="window.location.href='settings.html'" data-i18n="settings_btn">Settings</button>
+  <button class="secondary" onclick="logout()" data-i18n="logout_btn">Logout</button>
+</div>
+
+<footer>
+  <ul>
+    <li><a href="about.html" data-i18n="about">About</a></li>
+    <li><a href="blog.html" data-i18n="blog">Blog</a></li>
+    <li><a href="privacy.html" data-i18n="privacy">Privacy</a></li>
+    <li><a href="terms.html" data-i18n="terms">Terms</a></li>
+    <li><a href="contact-uploading.html" data-i18n="contact_upload">Contact</a></li>
+  </ul>
+  <div><span id="langContainer"></span></div>
+</footer>
+
+<!-- ─── Verify Modal ─── -->
+<div class="modal-overlay" id="verifyModal">
+  <div class="modal">
+    <h2>Verify your email</h2>
+    <p id="modalEmail" style="color:#60a5fa;font-weight:600">user@example.com</p>
+    <p>Enter the 6-digit code sent to your email</p>
+
+    <input class="code-input" id="codeInput" type="text" maxlength="6" inputmode="numeric"
+           placeholder="000000" autocomplete="one-time-code">
+
+    <div id="homeCodeDisplay" style="display:none;background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.25);border-radius:10px;padding:10px;margin-top:10px;font-size:13px;color:#93c5fd">
+      Code: <strong id="homeCodeValue" style="font-size:20px;letter-spacing:6px;color:#60a5fa"></strong>
+    </div>
+
+    <button class="modal-btn primary" id="verifyBtn" onclick="doVerify()">Verify</button>
+
+    <button class="modal-btn ghost" id="sendCodeBtn" onclick="sendCode()">Send Code</button>
+
+    <div class="status" id="verifyStatus"></div>
+
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)">
+      <p style="font-size:12px;color:#94a3b8;margin-bottom:6px">Remind me later</p>
+      <div class="reminder-grid">
+        <button class="reminder-btn" onclick="setReminder('later')">In 1h</button>
+        <button class="reminder-btn" onclick="setReminder('6h')">In 6h</button>
+        <button class="reminder-btn" onclick="setReminder('24h')">Tomorrow</button>
+        <button class="reminder-btn" onclick="setReminder('never')">Don't ask</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const user = JSON.parse(localStorage.getItem("sn_user"));
+if(!user){ window.location.href = "index.html"; }
+
+document.getElementById("title").innerText = "Welcome Back, " + user.name.split(" ")[0];
+document.getElementById("email").innerText = user.email;
+document.getElementById("avatar").innerText = user.name.charAt(0).toUpperCase();
+
+let isVerified = false;
+
+function continueUser(){ window.location.href = "settings.html"; }
+
+function logout(){
+  localStorage.removeItem("sn_user");
+  localStorage.removeItem("sn_session_seen");
+  localStorage.removeItem("verifyReminderAt");
+  window.location.href = "index.html";
+}
+
+// ─── Verification check ───
+fetch("/api/user?email=" + encodeURIComponent(user.email))
+  .then(r => r.json())
+  .then(data => {
+    isVerified = data.verified;
+    updateBadge();
+    if (!data.verified) checkReminder();
+  })
+  .catch(() => {});
+
+function updateBadge(){
+  const badge = document.getElementById("verifyBadge");
+  const icon = document.getElementById("verifyIcon");
+  const label = document.getElementById("verifyLabel");
+  if (isVerified){
+    badge.classList.add("verified");
+    badge.onclick = null;
+    icon.innerHTML = "&#10003;";
+    label.innerText = "Verified";
+  } else {
+    badge.classList.remove("verified");
+    badge.onclick = openVerifyModal;
+    icon.innerHTML = "&#9679;";
+    label.innerText = "Verify Email";
+  }
+}
+
+// ─── Reminder system ───
+function checkReminder(){
+  const at = localStorage.getItem("verifyReminderAt");
+  if (!at) { openVerifyModal(); return; }
+  if (at === "never") return;
+  if (Date.now() >= parseInt(at)) openVerifyModal();
+}
+
+function setReminder(when){
+  localStorage.removeItem("verifyReminderAt");
+  if (when === "never"){ localStorage.setItem("verifyReminderAt", "never"); closeVerifyModal(); return; }
+  const ms = when === "later" ? 3600000 : when === "6h" ? 21600000 : 86400000;
+  localStorage.setItem("verifyReminderAt", String(Date.now() + ms));
+  closeVerifyModal();
+  const names = {later:"1 hour", "6h":"6 hours", "24h":"24 hours"};
+  document.getElementById("verifyStatus").innerText = "Reminder set for " + names[when];
+}
+
+// ─── Modal ───
+function openVerifyModal(){
+  document.getElementById("modalEmail").innerText = user.email;
+  document.getElementById("codeInput").value = "";
+  document.getElementById("verifyStatus").innerText = "";
+  document.getElementById("homeCodeDisplay").style.display = "none";
+  document.getElementById("verifyBtn").disabled = false;
+  document.getElementById("sendCodeBtn").disabled = false;
+  document.getElementById("verifyModal").classList.add("show");
+}
+
+function closeVerifyModal(){
+  document.getElementById("verifyModal").classList.remove("show");
+}
+
+document.getElementById("verifyModal").addEventListener("click", function(e){
+  if (e.target === this) closeVerifyModal();
+});
+
+// ─── Code sending & verification ───
+function sendCode(){
+  const btn = document.getElementById("sendCodeBtn");
+  const status = document.getElementById("verifyStatus");
+  btn.disabled = true;
+  status.innerText = "Sending code...";
+  fetch("/api/send-verify-code", {
+    method: "POST", headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({email: user.email})
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.error) { status.innerText = data.error; btn.disabled = false; return; }
+    status.innerText = "Code sent!";
+    if (data.code) {
+      document.getElementById("homeCodeDisplay").style.display = "block";
+      document.getElementById("homeCodeValue").textContent = data.code;
+      document.getElementById("codeInput").value = data.code;
+    }
+    btn.disabled = false;
+  })
+  .catch(() => { status.innerText = "Server error"; btn.disabled = false; });
+}
+
+function doVerify(){
+  const code = document.getElementById("codeInput").value.trim();
+  const btn = document.getElementById("verifyBtn");
+  const status = document.getElementById("verifyStatus");
+  if (code.length !== 6 || isNaN(code)){ status.innerText = "Enter a 6-digit code"; return; }
+  btn.disabled = true;
+  status.innerText = "Verifying...";
+  fetch("/api/verify", {
+    method: "POST", headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({email: user.email, code})
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.error) { status.innerText = data.error; btn.disabled = false; return; }
+    isVerified = true;
+    updateBadge();
+    localStorage.removeItem("verifyReminderAt");
+    status.innerText = "Email verified!";
+    setTimeout(closeVerifyModal, 1200);
+  })
+  .catch(() => { status.innerText = "Server error"; btn.disabled = false; });
+}
+
+buildLangDropdown("langContainer");
+applyTranslation();
+</script>
+
+</body>
+</html>

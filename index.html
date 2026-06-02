@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="page_title_index">SNAFIC Login</title>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="translations.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+
+body{
+    height:100vh;
+    overflow:hidden;
+    background:#0b1220;
+}
+
+.bg{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(135deg,#08111f,#0f172a);
+}
+
+.bg::before,
+.bg::after{
+    content:"";
+    position:absolute;
+    border-radius:50%;
+    filter:blur(90px);
+    animation:blobMove 10s ease-in-out infinite;
+}
+
+.bg::before{
+    width:380px;
+    height:380px;
+    background:#2563eb;
+    left:-120px;
+    top:-120px;
+}
+
+.bg::after{
+    width:320px;
+    height:320px;
+    background:#60a5fa;
+    right:-80px;
+    bottom:-80px;
+    animation-delay:2s;
+}
+
+@keyframes blobMove{
+    0%,100%{transform:translate(0,0)}
+    50%{transform:translate(30px,-30px)}
+}
+
+.logo{
+    position:absolute;
+    top:30px;
+    left:50px;
+    font-size:34px;
+    font-weight:800;
+    letter-spacing:2px;
+    background:linear-gradient(90deg,#60a5fa,#ffffff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    z-index:5;
+}
+
+.container{
+    display:flex;
+    height:100vh;
+    position:relative;
+    z-index:2;
+}
+
+.left,
+.right{
+    width:50%;
+}
+
+.left{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:40px 60px;
+    color:white;
+}
+
+.left h1{
+    font-size:58px;
+    line-height:1.1;
+    margin-bottom:18px;
+}
+
+.sub{
+    color:#cbd5e1;
+    max-width:650px;
+    margin-bottom:35px;
+    font-size:17px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.card{
+    background:rgba(255,255,255,.08);
+    backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:24px;
+    padding:24px;
+    transition:.4s ease;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 15px 40px rgba(96,165,250,.15);
+}
+
+.card div{
+    font-size:30px;
+}
+
+.card h3{
+    margin:10px 0;
+}
+
+.card p{
+    color:#cbd5e1;
+    font-size:14px;
+    line-height:1.6;
+}
+
+.right{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px;
+}
+
+.login{
+    position:relative;
+    overflow:hidden;
+    width:100%;
+    max-width:500px;
+    background:rgba(255,255,255,.08);
+    backdrop-filter:blur(25px);
+    border-radius:32px;
+    border:1px solid rgba(255,255,255,.12);
+    padding:36px;
+    color:white;
+    text-align:center;
+    box-shadow:0 25px 60px rgba(0,0,0,.25);
+}
+
+.login::before{
+    content:"";
+    position:absolute;
+    width:260px;
+    height:260px;
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(96,165,250,.28),transparent 70%);
+    top:-80px;
+    right:-80px;
+    animation:rotateGlow 8s linear infinite;
+}
+
+@keyframes rotateGlow{
+    from{transform:rotate(0deg)}
+    to{transform:rotate(360deg)}
+}
+
+.login .avatar{
+    width:80px;height:80px;border-radius:50%;
+    background:linear-gradient(135deg,#2563eb,#60a5fa);
+    display:flex;align-items:center;justify-content:center;
+    font-size:26px;font-weight:800;
+    margin:0 auto 14px;
+    box-shadow:0 0 25px rgba(96,165,250,.35);
+    position:relative;z-index:2;
+}
+.login .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
+
+.login h2{
+    font-size:38px;
+    margin-bottom:8px;
+    position:relative;
+    z-index:2;
+}
+
+.login .login-sub{
+    color:#94a3b8;
+    margin-bottom:0;
+    position:relative;
+    z-index:2;
+}
+
+input{
+    width:100%;
+    padding:17px;
+    margin-top:16px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.05);
+    color:white;
+    font-size:15px;
+    outline:none;
+    transition:.3s;
+}
+
+input:focus{
+    border-color:#60a5fa;
+    box-shadow:0 0 20px rgba(96,165,250,.2);
+}
+
+input::placeholder{color:#475569}
+
+button{
+    width:100%;
+    border:none;
+    cursor:pointer;
+    font-weight:700;
+    font-family:inherit;
+}
+
+.primary{
+    margin-top:18px;
+    padding:17px;
+    border-radius:16px;
+    color:white;
+    font-size:15px;
+    background:linear-gradient(135deg,#2563eb,#60a5fa);
+    transition:.35s;
+}
+
+.primary:hover{
+    transform:translateY(-3px);
+    box-shadow:0 12px 30px rgba(37,99,235,.35);
+}
+
+.or{
+    text-align:center;
+    margin:18px 0;
+    color:#475569;
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    position:relative;z-index:2;
+}
+.or::before,.or::after{content:'';display:inline-block;width:40%;height:1px;background:rgba(255,255,255,.06);vertical-align:middle;margin:0 8px}
+
+.google{
+    position:relative;
+    overflow:hidden;
+    background:white;
+    color:#111;
+    height:56px;
+    border-radius:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    font-size:15px;font-weight:500;
+    transition:.35s ease;
+    z-index:2;
+}
+
+.google:hover{
+    transform:translateY(-4px);
+    box-shadow:0 15px 35px rgba(96,165,250,.35),0 0 40px rgba(37,99,235,.25);
+}
+
+.google-icon{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    animation:floatIcon 2.5s ease-in-out infinite;
+    z-index:2;
+}
+
+.google-text{z-index:2;position:relative}
+
+.shine{
+    position:absolute;
+    top:0;
+    left:-120%;
+    width:60%;
+    height:100%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.85),transparent);
+    transform:skewX(-25deg);
+    animation:shineMove 3s linear infinite;
+}
+
+@keyframes shineMove{100%{left:180%}}
+@keyframes floatIcon{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
+.signup{
+    text-align:center;
+    margin-top:22px;
+    color:#cbd5e1;
+    font-size:14px;
+    position:relative;z-index:2;
+}
+
+.signup a{
+    color:#60a5fa;
+    text-decoration:none;
+    font-weight:600;
+}
+
+.signup a:hover{text-decoration:underline}
+
+.hidden{display:none}
+.user-info{text-align:center;margin-bottom:10px;position:relative;z-index:2}
+.user-info .user-name{font-size:18px;font-weight:700;color:white}
+.user-info .user-email{font-size:13px;color:#94a3b8;margin-top:2px}
+
+.btn-ghost{
+    padding:14px;margin-top:12px;border-radius:16px;
+    border:1px solid rgba(255,255,255,.15);background:transparent;
+    color:#cbd5e1;font-size:14px;font-weight:600;cursor:pointer;transition:.3s;font-family:inherit;
+}
+.btn-ghost:hover{background:rgba(255,255,255,.05)}
+
+.btn-link{
+    background:transparent;border:none;
+    color:#64748b;font-size:13px;cursor:pointer;
+    margin-top:12px;transition:color .2s;display:inline-block;font-family:inherit;
+}
+.btn-link:hover{color:#cbd5e1;text-decoration:underline}
+
+.loading-overlay{
+    position:absolute;inset:0;z-index:100;
+    background:rgba(7,11,20,.85);backdrop-filter:blur(8px);
+    border-radius:32px;display:none;align-items:center;justify-content:center;
+}
+.loading-overlay.show{display:flex}
+.loading-spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,.06);border-top-color:#3b82f6;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{margin-top:12px;font-size:13px;color:#94a3b8}
+
+#googleBtnContainer{width:100%;z-index:2;position:relative}
+#googleBtnContainer iframe{margin:0 auto!important;max-width:100%!important}
+
+.gmodal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);align-items:center;justify-content:center}
+.gmodal-overlay.show{display:flex}
+.gmodal{
+  width:420px;max-width:92vw;
+  background:white;border-radius:24px;
+  padding:32px 28px 24px;text-align:center;
+  box-shadow:0 30px 80px rgba(0,0,0,.4);
+  animation:gmodalIn .3s ease-out;
+}
+@keyframes gmodalIn{from{opacity:0;transform:scale(.92) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.gmodal .glogo{width:64px;height:64px;margin:0 auto 12px}
+.gmodal h2{color:#202124;font-size:22px;font-weight:400;margin-bottom:2px}
+.gmodal .gsub{color:#5f6368;font-size:14px;margin-bottom:22px}
+.gmodal .ginput{width:100%;padding:14px 12px;border:1px solid #dadce0;border-radius:8px;font-size:16px;outline:none;transition:.2s;color:#202124;background:#fff;font-family:inherit}
+.gmodal .ginput:focus{border-color:#1a73e8;box-shadow:0 0 0 2px rgba(26,115,232,.15)}
+.gmodal .ginput::placeholder{color:#80868b}
+.gmodal .gbtn{width:100%;padding:12px;margin-top:16px;border:none;border-radius:24px;background:#1a73e8;color:white;font-size:14px;font-weight:500;cursor:pointer;transition:.2s;font-family:inherit}
+.gmodal .gbtn:hover{background:#1557b0}
+.gmodal .gbtn:disabled{opacity:.6;cursor:default}
+.gmodal .gstatus{color:#d93025;font-size:12px;margin-top:6px;min-height:18px}
+.gmodal .gfooter{color:#5f6368;font-size:12px;margin-top:16px;padding-top:16px;border-top:1px solid #e8eaed}
+.gmodal .gfooter a{color:#1a73e8;text-decoration:none;cursor:pointer}
+.gmodal .gfooter a:hover{text-decoration:underline}
+.gmodal .gclose{position:absolute;top:14px;right:18px;background:none;border:none;font-size:24px;color:#5f6368;cursor:pointer;line-height:1;padding:4px}
+.gmodal-wrap{position:relative}
+
+.footer{
+    position:fixed;bottom:0;left:40px;z-index:5;
+    padding:14px 0;font-size:13px;color:#6b7280;
+}
+.footer .footer-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-start}
+.footer .footer-top a{color:#6b7280;text-decoration:none;transition:color .2s}
+.footer .footer-top a:hover{color:#cbd5e1}
+.footer .footer-top .footer-brand{color:#94a3b8;font-weight:700}
+.footer .footer-top .footer-lang{color:#6b7280;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:color .2s}
+.footer .footer-top .footer-lang:hover{color:#cbd5e1}
+#langContainer{display:inline}
+#langContainer select{font-size:11px!important;padding:2px 20px 2px 6px!important;min-width:auto!important;background-color:transparent!important;color:#6b7280!important;border:1px solid transparent!important;cursor:pointer;appearance:none;-webkit-appearance:none}
+#langContainer select:hover{color:#cbd5e1!important}
+.footer .footer-bottom{margin-top:6px}
+.footer .footer-bottom a{color:#6b7280;text-decoration:none}
+
+@media(max-width:900px){
+    body{overflow:auto}
+    .container{flex-direction:column;height:auto}
+    .left,.right{width:100%}
+    .left{padding-top:100px;padding-bottom:40px}
+    .left h1{font-size:40px}
+    .grid{grid-template-columns:1fr}
+    .right{padding:20px}
+    .login{max-width:100%}
+    .logo{left:24px;top:20px;font-size:26px}
+    .footer{left:20px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<div class="logo">SNAFIC</div>
+
+<div class="container">
+
+    <div class="left">
+
+        <h1 data-i18n="features_heading">Connect, Explore &amp; Create</h1>
+
+        <p class="sub" data-i18n="brand_sub">
+            Music, Chat, Maps and Snap AI in one beautiful modern platform.
+            Experience next-generation social networking with premium design.
+        </p>
+
+        <div class="grid">
+
+            <div class="card">
+                <div>&#x1F3B5;</div>
+                <h3 data-i18n="music_title">Music</h3>
+                <p data-i18n="music_desc">Discover trending tracks and share your favorite playlists.</p>
+            </div>
+
+            <div class="card">
+                <div>&#x1F4AC;</div>
+                <h3 data-i18n="chat_title">Chat</h3>
+                <p data-i18n="chat_desc">Fast, secure and real-time conversations with friends.</p>
+            </div>
+
+            <div class="card">
+                <div>&#x1F5FA;&#xFE0F;</div>
+                <h3 data-i18n="maps_title">Maps</h3>
+                <p data-i18n="maps_desc">Explore places, directions and nearby discoveries.</p>
+            </div>
+
+            <div class="card">
+                <div>&#x1F916;</div>
+                <h3 data-i18n="snap_ai_title">Snap AI</h3>
+                <p data-i18n="snap_ai_desc">AI-powered assistant built into your social experience.</p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="right">
+
+        <div class="login">
+
+            <!-- LOGIN BOX -->
+            <div id="loginBox">
+                <div class="avatar" id="avatar">SF</div>
+                <h2 id="loginTitle" data-i18n="welcome_first">Welcome</h2>
+                <p class="login-sub" id="loginSubtitle" data-i18n="subtitle_first">Sign in to continue</p>
+
+                <input id="emailInput" type="email" data-i18n-placeholder="email_pl" placeholder="Email Address">
+                <input id="passInput" type="password" data-i18n-placeholder="pass_pl" placeholder="Password" onkeydown="if(event.key==='Enter')login()">
+
+                <button class="primary" onclick="login()" data-i18n="login_btn">Login</button>
+
+                <div class="or" data-i18n="or_text">OR</div>
+
+                <div id="googleBtnContainer"></div>
+
+                <div class="signup">
+                    <span data-i18n="signup_text">Don't have an account?</span>
+                    <a href="signup.html" data-i18n="signup_link">Sign Up</a>
+                </div>
+            </div>
+
+            <!-- USER BOX -->
+            <div id="userBox" class="hidden">
+                <div class="avatar" id="userAvatar">
+                    <img id="avatarImg" src="" alt="" style="display:none">
+                    <span id="avatarLetter" style="display:block">S</span>
+                </div>
+                <h2 id="userTitle" data-i18n="welcome_back">Welcome Back</h2>
+                <p class="login-sub" data-i18n="subtitle_back">Is this you?</p>
+                <div class="user-info">
+                    <div class="user-name" id="userNameDisplay"></div>
+                    <div class="user-email" id="userEmailDisplay"></div>
+                </div>
+                <button class="primary" onclick="directLogin()" data-i18n="continue_btn">Continue as this user</button>
+                <button class="btn-ghost" onclick="logout()" data-i18n="logout_btn">Logout</button>
+                <button class="btn-link" onclick="logout()" data-i18n="switch_account">Login with another account</button>
+            </div>
+
+            <!-- Loading Overlay -->
+            <div class="loading-overlay" id="loadingOverlay">
+                <div style="text-align:center">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text" id="loadingText">Signing in...</div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Google Modal -->
+<div class="gmodal-overlay" id="googleModal">
+  <div class="gmodal">
+    <div class="gmodal-wrap">
+      <button class="gclose" onclick="closeGoogleModal()">&times;</button>
+      <svg class="glogo" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.73 1.22 9.24 3.61l6.89-6.89C35.94 2.39 30.45 0 24 0 14.62 0 6.51 5.38 2.56 13.22l8.02 6.23C12.46 13.63 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.14-3.09-.4-4.55H24v9.02h12.94c-.56 2.98-2.24 5.5-4.78 7.2l7.73 6c4.51-4.16 7.09-10.29 7.09-17.67z"/><path fill="#FBBC05" d="M10.58 28.55A14.5 14.5 0 0 1 9.5 24c0-1.58.28-3.11.78-4.55l-8.02-6.23A23.94 23.94 0 0 0 0 24c0 3.87.93 7.52 2.56 10.78l8.02-6.23z"/><path fill="#34A853" d="M24 48c6.45 0 11.86-2.13 15.81-5.78l-7.73-6c-2.15 1.45-4.89 2.28-8.08 2.28-6.26 0-11.54-4.13-13.42-9.95l-8.02 6.23C6.51 42.62 14.62 48 24 48z"/></svg>
+      <h2>Choose an account</h2>
+      <p class="gsub">to continue to Snafix</p>
+      <input class="ginput" id="googleEmailInput" type="email" placeholder="Google email address" autocomplete="email" onkeydown="if(event.key==='Enter')submitGoogleAccount()">
+      <button class="gbtn" id="googleModalBtn" onclick="submitGoogleAccount()">Next</button>
+      <div class="gstatus" id="googleModalStatus"></div>
+      <div class="gfooter">
+        <a onclick="closeGoogleModal()">Cancel</a> &middot;
+        <a href="signup.html">Create account</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+    <div class="footer-top">
+        <a href="index.html" class="footer-brand">Snafix</a>
+        <a href="about.html" data-i18n="about">About</a>
+        <a href="blog.html" data-i18n="blog">Blog</a>
+        <a href="privacy.html" data-i18n="privacy">Privacy</a>
+        <a href="terms.html" data-i18n="terms">Terms</a>
+        <a href="language.html" class="footer-lang">
+            <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#6b7280;vertical-align:middle"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+            <span data-i18n="language_label">English</span>
+        </a>
+        <span id="langContainer"></span>
+    </div>
+    <div class="footer-bottom">
+        <span data-i18n="copyright">&copy; 2026 snafic.inc</span>
+        <span style="color:#475569;margin:0 6px">&middot;</span>
+        <a href="mailto:snafic.official@gmail.com">snafic.official@gmail.com</a>
+        <span style="color:#475569;margin:0 6px">&middot;</span>
+        <span data-i18n="developed">Developed by</span> <strong style="color:#6b7280" data-i18n="sarobar">Sarobar Adhikari</strong>
+    </div>
+</div>
+
+<script>
+let user = JSON.parse(localStorage.getItem("sn_user"));
+
+const loginBox = document.getElementById("loginBox");
+const userBox = document.getElementById("userBox");
+const avatar = document.getElementById("avatar");
+
+function parseJwt(t){return JSON.parse(atob(t.split('.')[1]))}
+function showLoading(t){document.getElementById('loadingText').textContent=t||'Signing in...';document.getElementById('loadingOverlay').classList.add('show')}
+function hideLoading(){document.getElementById('loadingOverlay').classList.remove('show')}
+
+/* ─── Google Callback ─── */
+function handleCredentialResponse(response){
+  showLoading('Verifying with Google...');
+  const data=parseJwt(response.credential);
+  fetch('/api/google-login',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({credential:response.credential})
+  }).then(r=>r.json()).then(res=>{
+    if(res.error){hideLoading();alert(res.error);return}
+    const session={name:res.name||data.name,email:res.email||data.email,photo:data.picture||'',provider:'google',verified:res.verified,onboarded:res.onboarded};
+    localStorage.setItem('sn_user',JSON.stringify(session));hideLoading();
+    if(!session.verified){window.location.href='verify.html?email='+encodeURIComponent(session.email)+'&redirect='+(session.onboarded?'session.html':'interests.html');return}
+    window.location.href=session.onboarded?'session.html':'interests.html';
+  }).catch(()=>{hideLoading();alert('Server error')});
+}
+
+/* ─── Init Google ─── */
+function initGoogle(){
+  fetch('/api/google-config').then(r=>r.json()).then(cfg=>{
+    if(cfg.clientId&&typeof google!=='undefined'&&google.accounts){
+      google.accounts.id.initialize({client_id:cfg.clientId,callback:handleCredentialResponse});
+      google.accounts.id.renderButton(document.getElementById('googleBtnContainer'),{
+        type:'standard',shape:'pill',theme:'outline',size:'large',width:'100%'
+      });
+    }else{
+      document.getElementById('googleBtnContainer').innerHTML=
+        '<button class="google">'+
+        '<span class="google-icon"><svg viewBox="0 0 48 48" width="22"><path fill="#EA4335" d="M24 9.5c3.54 0 6.73 1.22 9.24 3.61l6.89-6.89C35.94 2.39 30.45 0 24 0 14.62 0 6.51 5.38 2.56 13.22l8.02 6.23C12.46 13.63 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.14-3.09-.4-4.55H24v9.02h12.94c-.56 2.98-2.24 5.5-4.78 7.2l7.73 6c4.51-4.16 7.09-10.29 7.09-17.67z"/><path fill="#FBBC05" d="M10.58 28.55A14.5 14.5 0 0 1 9.5 24c0-1.58.28-3.11.78-4.55l-8.02-6.23A23.94 23.94 0 0 0 0 24c0 3.87.93 7.52 2.56 10.78l8.02-6.23z"/><path fill="#34A853" d="M24 48c6.45 0 11.86-2.13 15.81-5.78l-7.73-6c-2.15 1.45-4.89 2.28-8.08 2.28-6.26 0-11.54-4.13-13.42-9.95l-8.02 6.23C6.51 42.62 14.62 48 24 48z"/></svg></span>'+
+        '<span class="google-text" data-i18n="google_btn">Continue with Google</span>'+
+        '<span class="shine"></span></button>';
+      document.getElementById('googleBtnContainer').querySelector('.google').onclick=openGooglePopup;
+      applyTranslation();
+    }
+  }).catch(()=>{
+    document.getElementById('googleBtnContainer').innerHTML=
+      '<button class="google">'+
+      '<span class="google-icon"><svg viewBox="0 0 48 48" width="22"><path fill="#EA4335" d="M24 9.5c3.54 0 6.73 1.22 9.24 3.61l6.89-6.89C35.94 2.39 30.45 0 24 0 14.62 0 6.51 5.38 2.56 13.22l8.02 6.23C12.46 13.63 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.14-3.09-.4-4.55H24v9.02h12.94c-.56 2.98-2.24 5.5-4.78 7.2l7.73 6c4.51-4.16 7.09-10.29 7.09-17.67z"/><path fill="#FBBC05" d="M10.58 28.55A14.5 14.5 0 0 1 9.5 24c0-1.58.28-3.11.78-4.55l-8.02-6.23A23.94 23.94 0 0 0 0 24c0 3.87.93 7.52 2.56 10.78l8.02-6.23z"/><path fill="#34A853" d="M24 48c6.45 0 11.86-2.13 15.81-5.78l-7.73-6c-2.15 1.45-4.89 2.28-8.08 2.28-6.26 0-11.54-4.13-13.42-9.95l-8.02 6.23C6.51 42.62 14.62 48 24 48z"/></svg></span>'+
+      '<span class="google-text" data-i18n="google_btn">Continue with Google</span>'+
+      '<span class="shine"></span></button>';
+    document.getElementById('googleBtnContainer').querySelector('.google').onclick=openGooglePopup;
+    applyTranslation();
+  });
+}
+
+/* ─── Google Account Picker Popup ─── */
+function openGooglePopup(){
+  document.getElementById('googleModal').classList.add('show');
+  document.getElementById('googleEmailInput').value='';
+  document.getElementById('googleModalStatus').textContent='';
+  document.getElementById('googleModalBtn').disabled=false;
+  setTimeout(()=>document.getElementById('googleEmailInput').focus(),200);
+}
+function closeGoogleModal(){document.getElementById('googleModal').classList.remove('show')}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeGoogleModal()});
+document.getElementById('googleModal').addEventListener('click',function(e){if(e.target===this)closeGoogleModal()});
+
+function submitGoogleAccount(){
+  const email=document.getElementById('googleEmailInput').value.trim();
+  const btn=document.getElementById('googleModalBtn');
+  const status=document.getElementById('googleModalStatus');
+  if(!email||!email.includes('@')){status.textContent='Enter a valid Google email address';return}
+  btn.disabled=true;status.textContent='Signing in...';
+  fetch('/api/google-login',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({email})
+  }).then(r=>r.json()).then(data=>{
+    btn.disabled=false;
+    if(data.error){status.textContent=data.error;return}
+    const session={name:data.name||email.split('@')[0],email:data.email,photo:'',provider:'google',verified:data.verified,onboarded:data.onboarded};
+    localStorage.setItem('sn_user',JSON.stringify(session));
+    if(!session.verified){window.location.href='verify.html?email='+encodeURIComponent(session.email)+'&redirect='+(session.onboarded?'session.html':'interests.html');return}
+    window.location.href=session.onboarded?'session.html':'interests.html';
+  }).catch(()=>{btn.disabled=false;status.textContent='Server error'});
+}
+
+/* ─── Email Login ─── */
+function login(){
+  const email=document.getElementById('emailInput').value.trim();
+  const pass=document.getElementById('passInput').value;
+  if(!email||!pass){alert('Please enter email and password');return}
+  showLoading('Signing in...');
+  fetch('/api/login',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({email,password:pass})
+  }).then(r=>r.json()).then(data=>{
+    if(data.error){hideLoading();alert(data.error);return}
+    const session={name:data.name,email:data.email,photo:'',provider:'direct',verified:data.verified,onboarded:data.onboarded};
+    localStorage.setItem('sn_user',JSON.stringify(session));hideLoading();
+    if(!session.verified){window.location.href='verify.html?email='+encodeURIComponent(session.email)+'&redirect='+(session.onboarded?'session.html':'interests.html');return}
+    window.location.href=session.onboarded?'session.html':'interests.html';
+  }).catch(()=>{hideLoading();alert('Server error')});
+}
+
+/* ─── Welcome Back ─── */
+function init(){
+    if(!user){
+        avatar.innerText = "SF";
+        setTimeout(initGoogle,300);
+        return;
+    }
+
+    loginBox.classList.add("hidden");
+    userBox.classList.remove("hidden");
+
+    const img=document.getElementById('avatarImg');
+    const letter=document.getElementById('avatarLetter');
+    if(user.photo){
+        img.src=user.photo;img.style.display='block';letter.style.display='none';
+    }else{
+        img.style.display='none';letter.style.display='block';
+        document.getElementById('userAvatar').querySelector('span').textContent=user.name.charAt(0).toUpperCase();
+    }
+
+    document.getElementById("userNameDisplay").innerText = user.name;
+    document.getElementById("userEmailDisplay").innerText = user.email;
+}
+
+function directLogin(){
+    window.location.href = "session.html";
+}
+
+function logout(){
+    localStorage.removeItem("sn_user");
+    localStorage.removeItem("sn_session_seen");
+    localStorage.removeItem("verifyReminderAt");
+    location.reload();
+}
+
+buildLangDropdown("langContainer");
+applyTranslation();
+init();
+</script>
+
+</body>
+</html>

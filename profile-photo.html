@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile Photo - Snafix</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
+body{min-height:100vh;background:#0b1220;color:white;display:flex;align-items:center;justify-content:center;padding:20px}
+.bg{position:fixed;inset:0;background:linear-gradient(135deg,#08111f,#0f172a)}
+.bg::before,.bg::after{content:"";position:absolute;border-radius:50%;filter:blur(90px);animation:blobMove 10s ease-in-out infinite}
+.bg::before{width:380px;height:380px;background:#2563eb;left:-120px;top:-120px}
+.bg::after{width:320px;height:320px;background:#60a5fa;right:-80px;bottom:-80px;animation-delay:2s}
+@keyframes blobMove{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
+.logo{position:fixed;top:24px;left:40px;font-size:30px;font-weight:800;letter-spacing:2px;z-index:5}
+.logo .w{color:#fff}.logo .b{color:#2563eb}
+.card{position:relative;overflow:hidden;width:480px;background:rgba(255,255,255,.08);backdrop-filter:blur(25px);border-radius:28px;border:1px solid rgba(255,255,255,.12);padding:36px;z-index:2;box-shadow:0 25px 60px rgba(0,0,0,.25);text-align:center}
+.card::before{content:"";position:absolute;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(96,165,250,.28),transparent 70%);top:-60px;right:-60px}
+.card h2{font-size:24px;margin-bottom:4px;position:relative;z-index:2}
+.card .sub{color:#94a3b8;font-size:14px;margin-bottom:20px;position:relative;z-index:2}
+.avatar-preview{width:140px;height:140px;border-radius:50%;margin:0 auto 16px;overflow:hidden;border:3px solid rgba(96,165,250,.3);position:relative;z-index:2;background:linear-gradient(135deg,#2563eb33,#60a5fa33);display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:800;color:rgba(255,255,255,.2)}
+.avatar-preview img{width:100%;height:100%;object-fit:cover}
+.upload-area{position:relative;z-index:2;margin-bottom:16px}
+.upload-btn{display:inline-block;padding:12px 28px;border-radius:14px;border:1px solid rgba(96,165,250,.3);color:#60a5fa;cursor:pointer;font-weight:600;font-size:14px;transition:.3s;background:rgba(96,165,250,.08)}
+.upload-btn:hover{background:rgba(96,165,250,.15)}
+input[type="file"]{display:none}
+.filter-row{display:flex;gap:8px;overflow-x:auto;padding:8px 0;position:relative;z-index:2;justify-content:center;flex-wrap:wrap}
+.filter-btn{width:60px;height:60px;border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:.3s;flex-shrink:0;background:rgba(255,255,255,.05)}
+.filter-btn.active{border-color:#60a5fa}
+.filter-btn img{width:100%;height:100%;object-fit:cover}
+.filter-btn .flabel{font-size:9px;color:#94a3b8;text-align:center;display:block;margin-top:2px}
+.toggle-row{display:flex;align-items:center;justify-content:center;gap:10px;margin:16px 0;position:relative;z-index:2}
+.toggle-row label{color:#cbd5e1;font-size:14px;cursor:pointer}
+.switch{width:44px;height:24px;border-radius:12px;background:rgba(255,255,255,.1);cursor:pointer;position:relative;transition:.3s;border:none}
+.switch.on{background:#2563eb}
+.switch::after{content:"";position:absolute;width:20px;height:20px;border-radius:50%;background:white;top:2px;left:2px;transition:.3s}
+.switch.on::after{left:22px}
+.btn-group{display:flex;gap:10px;margin-top:8px;position:relative;z-index:2}
+.btn{flex:1;padding:14px;border:none;border-radius:14px;cursor:pointer;font-weight:700;font-size:15px;transition:.35s}
+.btn-primary{color:white;background:linear-gradient(135deg,#2563eb,#60a5fa)}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(37,99,235,.35)}
+.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,.15);color:#cbd5e1}
+.btn-ghost:hover{background:rgba(255,255,255,.05)}
+.crop-controls{display:none;gap:10px;margin:10px 0;justify-content:center;position:relative;z-index:2;flex-wrap:wrap}
+.crop-controls.show{display:flex}
+.crop-btn{padding:8px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:white;cursor:pointer;font-size:13px;transition:.3s}
+.crop-btn:hover{background:rgba(255,255,255,.1)}
+.crop-btn-primary{background:linear-gradient(135deg,#2563eb,#60a5fa);border-color:transparent;color:white}
+.crop-btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(37,99,235,.3)}
+#cropContainer{position:relative;margin:12px auto;width:100%;max-height:300px;overflow:hidden;border-radius:12px;display:none;z-index:2}
+#cropContainer.show{display:block}
+#cropContainer img{width:100%;display:block}
+.crop-overlay{position:absolute;inset:0;z-index:3}
+.crop-box{position:absolute;border:2px dashed white;cursor:move;z-index:5;box-shadow:0 0 0 9999px rgba(0,0,0,.55)}
+.crop-handle{position:absolute;width:18px;height:18px;background:white;border:2px solid #2563eb;border-radius:50%;z-index:6;transition:transform .15s}
+.crop-handle:hover{transform:scale(1.25)}
+.crop-handle.tl{top:-9px;left:-9px;cursor:nwse-resize}
+.crop-handle.tr{top:-9px;right:-9px;cursor:nesw-resize}
+.crop-handle.bl{bottom:-9px;left:-9px;cursor:nesw-resize}
+.crop-handle.br{bottom:-9px;right:-9px;cursor:nwse-resize}
+@media(max-width:500px){.card{padding:24px;margin:0 10px}.avatar-preview{width:110px;height:110px}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="logo"><span class="w">Sna</span><span class="b">fix</span></div>
+<div class="card">
+    <h2>Choose your profile photo</h2>
+    <p class="sub">Add a photo so friends can recognize you</p>
+    <div class="avatar-preview" id="avatarPreview">📷</div>
+
+    <div id="cropContainer">
+        <img id="cropImage" src="" alt="Crop preview">
+        <div class="crop-overlay" id="cropOverlay">
+            <div class="crop-box" id="cropBox">
+                <div class="crop-handle tl"></div>
+                <div class="crop-handle tr"></div>
+                <div class="crop-handle bl"></div>
+                <div class="crop-handle br"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="upload-area">
+        <label class="upload-btn" for="photoInput">Upload Photo</label>
+        <input type="file" id="photoInput" accept="image/*" onchange="handleFile(this)">
+    </div>
+
+    <div class="filter-row" id="filterRow"></div>
+
+    <div class="toggle-row">
+        <label>Private</label>
+        <button class="switch on" id="privacyToggle" onclick="togglePrivacy()"></button>
+        <label>Public</label>
+    </div>
+
+    <div class="crop-controls" id="cropControls">
+        <button class="crop-btn crop-btn-primary" onclick="applyCrop()">✓ Apply Crop</button>
+        <button class="crop-btn" onclick="cancelCrop()">✕ Cancel</button>
+    </div>
+
+    <div class="btn-group">
+        <button class="btn btn-ghost" onclick="skip()">Skip</button>
+        <button class="btn btn-primary" id="saveBtn" onclick="save()">Save & Finish</button>
+    </div>
+</div>
+
+<script>
+const email = localStorage.getItem("sn_user") ? JSON.parse(localStorage.getItem("sn_user")).email : null;
+if(!email) window.location.href = "index.html";
+
+let photoPublic = true;
+let uploadedFile = null;
+let croppedBlob = null;
+let currentFilter = "none";
+let hasCropped = false;
+
+const filters = [
+    {name:"none",label:"Original",css:""},
+    {name:"clarendon",label:"Clarendon",css:"brightness(1.1) contrast(1.2) saturate(1.3)"},
+    {name:"gingham",label:"Gingham",css:"brightness(1.05) hue-rotate(-10deg)"},
+    {name:"moon",label:"Moon",css:"grayscale(1) brightness(1.1)"},
+    {name:"lark",label:"Lark",css:"brightness(1.05) contrast(.9) saturate(.8)"},
+    {name:"reyes",label:"Reyes",css:"brightness(.9) sepia(.3) saturate(.8)"},
+    {name:"juno",label:"Juno",css:"brightness(1.1) saturate(1.2) hue-rotate(10deg)"},
+    {name:"slumber",label:"Slumber",css:"brightness(.95) saturate(.7) sepia(.2)"},
+    {name:"aden",label:"Aden",css:"brightness(1.1) saturate(.8) hue-rotate(-20deg)"},
+    {name:"perpetua",label:"Perpetua",css:"brightness(1.05) contrast(1.1) sepia(.1)"}
+];
+
+function togglePrivacy() {
+    const t = document.getElementById("privacyToggle");
+    photoPublic = !photoPublic;
+    t.classList.toggle("on");
+}
+
+// ─── Crop state ───
+let cropState = null;
+let cropBox = { x: 0, y: 0, size: 200 };
+let dragState = null;
+
+function handleFile(input) {
+    const file = input.files[0];
+    if(!file) return;
+    croppedBlob = null;
+    hasCropped = false;
+    uploadedFile = file;
+    document.getElementById('filterRow').innerHTML = '';
+    document.getElementById('filterRow').style.display = 'none';
+    document.querySelector('.toggle-row').style.display = 'none';
+    document.querySelector('.btn-group').style.display = 'none';
+    document.querySelector('.upload-area').style.display = 'none';
+    document.getElementById('avatarPreview').innerHTML = '\uD83D\uDCF7';
+    const reader = new FileReader();
+    reader.onload = function(e) { showCropMode(e.target.result); };
+    reader.readAsDataURL(file);
+}
+
+function showCropMode(src) {
+    const cropImg = document.getElementById('cropImage');
+    const container = document.getElementById('cropContainer');
+    container.classList.add('show');
+    document.getElementById('cropControls').classList.add('show');
+    cropImg.src = src;
+    cropImg.onload = function() {
+        const dw = cropImg.clientWidth;
+        const dh = cropImg.clientHeight;
+        if (!dw || !dh) { requestAnimationFrame(arguments.callee); return; }
+        cropState = { naturalW: cropImg.naturalWidth, naturalH: cropImg.naturalHeight, displayW: dw, displayH: dh };
+        const size = Math.floor(Math.min(dw, dh));
+        cropBox = { x: Math.floor((dw - size) / 2), y: Math.floor((dh - size) / 2), size };
+        renderCropBox();
+    };
+}
+
+function renderCropBox() {
+    const b = document.getElementById('cropBox');
+    b.style.left = cropBox.x + 'px';
+    b.style.top = cropBox.y + 'px';
+    b.style.width = cropBox.size + 'px';
+    b.style.height = cropBox.size + 'px';
+}
+
+function applyCrop() {
+    if (!cropState) return;
+    const img = document.getElementById('cropImage');
+    const scaleX = cropState.naturalW / cropState.displayW;
+    const scaleY = cropState.naturalH / cropState.displayH;
+    const scale = Math.min(scaleX, scaleY);
+    const sx = cropBox.x * scale;
+    const sy = cropBox.y * scale;
+    const sSize = cropBox.size * scale;
+
+    const canvas = document.createElement('canvas');
+    const outSize = 400;
+    canvas.width = outSize;
+    canvas.height = outSize;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, sx, sy, sSize, sSize, 0, 0, outSize, outSize);
+
+    canvas.toBlob(function(blob) {
+        croppedBlob = blob;
+        hasCropped = true;
+        const url = URL.createObjectURL(blob);
+        const preview = document.getElementById('avatarPreview');
+        preview.innerHTML = '<img id="previewImg" src="' + url + '" style="width:100%;height:100%;object-fit:cover">';
+        buildFilters(url);
+
+        document.getElementById('cropContainer').classList.remove('show');
+        document.getElementById('cropControls').classList.remove('show');
+        document.querySelector('.upload-area').style.display = 'block';
+        document.getElementById('filterRow').style.display = 'flex';
+        document.querySelector('.toggle-row').style.display = 'flex';
+        document.querySelector('.btn-group').style.display = 'flex';
+    }, 'image/jpeg', 0.85);
+}
+
+function cancelCrop() {
+    document.getElementById('cropContainer').classList.remove('show');
+    document.getElementById('cropControls').classList.remove('show');
+    document.querySelector('.upload-area').style.display = 'block';
+    document.querySelector('.btn-group').style.display = 'flex';
+    uploadedFile = null;
+    croppedBlob = null;
+    hasCropped = false;
+}
+
+// ─── Mouse events for crop ───
+document.addEventListener('mousedown', function(e) {
+    if (!document.getElementById('cropContainer').classList.contains('show')) return;
+    const handle = e.target.closest('.crop-handle');
+    const box = e.target.closest('.crop-box');
+    if (!handle && !box) return;
+    const rect = document.getElementById('cropContainer').getBoundingClientRect();
+    if (handle) {
+        const cls = handle.className;
+        dragState = {
+            mode: 'resize',
+            handle: cls.includes('tl') ? 'tl' : cls.includes('tr') ? 'tr' : cls.includes('bl') ? 'bl' : 'br',
+            startX: e.clientX - rect.left,
+            startY: e.clientY - rect.top,
+            startBox: { x: cropBox.x, y: cropBox.y, size: cropBox.size }
+        };
+    } else {
+        dragState = {
+            mode: 'drag',
+            startX: e.clientX - rect.left,
+            startY: e.clientY - rect.top,
+            startBox: { x: cropBox.x, y: cropBox.y, size: cropBox.size }
+        };
+    }
+    e.preventDefault();
+});
+
+document.addEventListener('mousemove', function(e) {
+    if (!dragState || !cropState) return;
+    const rect = document.getElementById('cropContainer').getBoundingClientRect();
+    const mx = Math.max(0, Math.min(cropState.displayW, e.clientX - rect.left));
+    const my = Math.max(0, Math.min(cropState.displayH, e.clientY - rect.top));
+    const sb = dragState.startBox;
+    const cw = cropState.displayW;
+    const ch = cropState.displayH;
+
+    if (dragState.mode === 'drag') {
+        cropBox.x = Math.max(0, Math.min(cw - sb.size, sb.x + mx - dragState.startX));
+        cropBox.y = Math.max(0, Math.min(ch - sb.size, sb.y + my - dragState.startY));
+    } else {
+        let ax, ay;
+        const h = dragState.handle;
+        if (h === 'br') { ax = sb.x; ay = sb.y; }
+        else if (h === 'bl') { ax = sb.x + sb.size; ay = sb.y; }
+        else if (h === 'tr') { ax = sb.x; ay = sb.y + sb.size; }
+        else { ax = sb.x + sb.size; ay = sb.y + sb.size; }
+
+        let size = Math.max(Math.abs(mx - ax), Math.abs(my - ay));
+        size = Math.max(20, Math.min(Math.min(cw, ch), size));
+        let bx, by;
+        if (mx >= ax && my >= ay) { bx = ax; by = ay; }
+        else if (mx < ax && my >= ay) { bx = ax - size; by = ay; }
+        else if (mx >= ax && my < ay) { bx = ax; by = ay - size; }
+        else { bx = ax - size; by = ay - size; }
+        if (bx < 0) { bx = 0; size = Math.min(size, ax); }
+        if (by < 0) { by = 0; size = Math.min(size, ay); }
+        if (bx + size > cw) size = cw - bx;
+        if (by + size > ch) size = ch - by;
+        cropBox.x = Math.round(bx);
+        cropBox.y = Math.round(by);
+        cropBox.size = Math.round(Math.max(20, size));
+    }
+    renderCropBox();
+});
+
+document.addEventListener('mouseup', function() { dragState = null; });
+
+// ─── Filters ───
+function buildFilters(src) {
+    const row = document.getElementById("filterRow");
+    row.innerHTML = filters.map((f,i) =>
+        '<div class="filter-btn ' + (i===0?'active':'') + '" onclick="applyFilter(this,\'' + f.name + '\')">' +
+        '<img src="' + src + '" style="filter:' + f.css + '"><span class="flabel">' + f.label + '</span></div>'
+    ).join("");
+}
+
+function applyFilter(el, name) {
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    el.classList.add("active");
+    currentFilter = name;
+    const f = filters.find(x => x.name === name);
+    const img = document.getElementById("previewImg");
+    if(img) img.style.filter = f.css;
+}
+
+// ─── Save / Skip ───
+function save() {
+    const hasPhoto = uploadedFile || croppedBlob;
+    if (!hasPhoto) {
+        fetch("/api/save-profile-settings", {
+            method: "POST", headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({email, photoPublic})
+        }).then(r=>r.json()).then(d => {
+            if(d.error) return alert(d.error);
+            window.location.href = "home.html";
+        });
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("photo", croppedBlob || uploadedFile);
+    formData.append("email", email);
+
+    fetch("/api/upload-photo", { method: "POST", body: formData })
+    .then(r => r.json())
+    .then(d => {
+        if(d.error) return alert(d.error);
+        fetch("/api/save-profile-settings", {
+            method: "POST", headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({email, photoPublic})
+        }).then(r=>r.json()).then(d2 => {
+            if(d2.error) return alert(d2.error);
+            window.location.href = "home.html";
+        });
+    });
+}
+
+function skip() {
+    fetch("/api/save-profile-settings", {
+        method: "POST", headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({email, photoPublic})
+    }).then(r=>r.json()).then(d => {
+        if(d.error) return alert(d.error);
+        window.location.href = "home.html";
+    });
+}
+</script>
+</body>
+</html>

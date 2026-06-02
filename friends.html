@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find Friends - Snafix</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="translations.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
+body{min-height:100vh;background:#0b1220;color:white;display:flex;flex-direction:column;align-items:center;padding:40px 20px}
+.bg{position:fixed;inset:0;background:linear-gradient(135deg,#08111f,#0f172a)}
+.bg::before,.bg::after{content:"";position:absolute;border-radius:50%;filter:blur(90px);animation:blobMove 10s ease-in-out infinite}
+.bg::before{width:380px;height:380px;background:#2563eb;left:-120px;top:-120px}
+.bg::after{width:320px;height:320px;background:#60a5fa;right:-80px;bottom:-80px;animation-delay:2s}
+@keyframes blobMove{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
+.logo{position:fixed;top:24px;left:40px;font-size:30px;font-weight:800;letter-spacing:2px;z-index:5}
+.logo .w{color:#fff}.logo .b{color:#2563eb}
+.card{position:relative;overflow:hidden;width:540px;background:rgba(255,255,255,.08);backdrop-filter:blur(25px);border-radius:28px;border:1px solid rgba(255,255,255,.12);padding:32px;z-index:2;box-shadow:0 25px 60px rgba(0,0,0,.25);margin-bottom:20px}
+.card::before{content:"";position:absolute;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(96,165,250,.28),transparent 70%);top:-60px;right:-60px}
+.card h2{font-size:22px;margin-bottom:2px;position:relative;z-index:2}
+.card .sub{color:#94a3b8;font-size:13px;margin-bottom:16px;position:relative;z-index:2}
+.tabs{display:flex;gap:4px;margin-bottom:16px;position:relative;z-index:2;background:rgba(255,255,255,.05);border-radius:12px;padding:4px}
+.tab{flex:1;padding:10px;text-align:center;border:none;border-radius:10px;cursor:pointer;font-weight:600;font-size:13px;background:transparent;color:#64748b;transition:.3s;font-family:inherit}
+.tab.active{background:rgba(96,165,250,.15);color:#60a5fa}
+.tab .badge{background:#2563eb;color:white;font-size:10px;padding:1px 7px;border-radius:10px;margin-left:4px}
+.user-list{display:flex;flex-direction:column;gap:8px;position:relative;z-index:2;max-height:320px;overflow-y:auto}
+.user-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);transition:.3s}
+.user-row:hover{border-color:rgba(255,255,255,.12)}
+.avatar-sm{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#60a5fa);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;overflow:hidden}
+.avatar-sm img{width:100%;height:100%;object-fit:cover}
+.user-info{flex:1;min-width:0}
+.user-info .uname{font-size:14px;font-weight:600}
+.user-info .uemail{font-size:12px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn{padding:7px 16px;border:none;border-radius:10px;cursor:pointer;font-weight:600;font-size:12px;transition:.3s;white-space:nowrap;font-family:inherit}
+.btn-add{background:rgba(96,165,250,.15);color:#60a5fa}
+.btn-add:hover{background:#2563eb;color:white}
+.btn-add.done{background:rgba(34,197,94,.15);color:#22c55e;cursor:default}
+.btn-accept{background:rgba(34,197,94,.15);color:#22c55e}
+.btn-accept:hover{background:#22c55e;color:white}
+.btn-reject{background:rgba(239,68,68,.12);color:#ef4444}
+.btn-reject:hover{background:#ef4444;color:white}
+.btn-group{display:flex;gap:6px}
+.no-users{color:#64748b;text-align:center;padding:20px;font-size:13px}
+.bottom-links{margin-top:12px;text-align:center;z-index:2;position:relative}
+.bottom-links a{color:#60a5fa;text-decoration:none;font-size:13px;margin:0 8px}
+.bottom-links a:hover{text-decoration:underline}
+.footer-info{margin-top:8px;color:#64748b;font-size:12px;z-index:2;position:relative;text-align:center}
+.footer-info a{color:#60a5fa;text-decoration:none}
+@media(max-width:580px){.card{padding:20px;width:100%}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="logo"><span class="w">Sna</span><span class="b">fix</span></div>
+
+<div class="card">
+  <h2 data-i18n="friends_title">Friends</h2>
+  <p class="sub" data-i18n="friends_sub_title">Connect with people</p>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('suggestions',this)" data-i18n="friends_suggestions">Suggestions</button>
+    <button class="tab" onclick="switchTab('requests',this)" id="requestsTab" data-i18n="friends_requests">Requests</button>
+    <button class="tab" onclick="switchTab('search',this)" data-i18n="friends_search">Search</button>
+  </div>
+
+  <div id="suggestionsPanel">
+    <div class="user-list" id="suggestionsList"></div>
+    <div class="btn-group" style="margin-top:16px;gap:10px;position:relative;z-index:2">
+        <button class="btn" style="flex:1;padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,.15);background:transparent;color:#cbd5e1;font-weight:700" onclick="skip()" data-i18n="skip">Skip</button>
+        <button class="btn" style="flex:1;padding:12px;border-radius:14px;background:linear-gradient(135deg,#2563eb,#60a5fa);color:white;font-weight:700" onclick="next()" data-i18n="next">Next</button>
+    </div>
+  </div>
+
+  <div id="requestsPanel" style="display:none">
+    <div class="user-list" id="requestsList"></div>
+  </div>
+
+  <div id="searchPanel" style="display:none">
+    <input id="searchInput" type="text" placeholder="Search by name or email..." oninput="searchUsers(this.value)" style="width:100%;padding:12px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.05);color:white;font-size:14px;outline:none;position:relative;z-index:2;margin-bottom:12px;font-family:inherit">
+    <div class="user-list" id="searchResults"></div>
+  </div>
+</div>
+
+<div class="bottom-links">
+  <a href="home.html" data-i18n="back_home">&larr; Back to Home</a>
+  <a href="chat.html" data-i18n="messages_link">Messages</a>
+</div>
+<div class="footer-info">
+  <span id="langContainer"></span>
+  <span style="margin:0 8px">|</span>
+  <a href="mailto:snafic.official@gmail.com">snafic.official@gmail.com</a>
+</div>
+
+<script>
+const email = localStorage.getItem("sn_user") ? JSON.parse(localStorage.getItem("sn_user")).email : null;
+if(!email) window.location.href = "index.html";
+
+let allUsers = [];
+
+function loadSuggestions() {
+  fetch("/api/suggested-friends?email=" + encodeURIComponent(email))
+    .then(r=>r.json())
+    .then(data => {
+      const list = document.getElementById("suggestionsList");
+      if(!data.length){
+        list.innerHTML = '<div class="no-users" data-i18n="friends_no_suggestions">No suggestions right now</div>';
+        return;
+      }
+      list.innerHTML = data.map(u => {
+        const initial = u.name ? u.name.charAt(0).toUpperCase() : "?";
+        const avatar = u.photo ? '<img src="' + u.photo + '" alt="">' : initial;
+        return '<div class="user-row">' +
+          '<div class="avatar-sm">' + avatar + '</div>' +
+          '<div class="user-info"><div class="uname">' + u.name + '</div><div class="uemail">' + (u.username ? "@" + u.username : u.email) + '</div></div>' +
+          '<button class="btn btn-add" data-id="' + u.id + '" onclick="addFriend(this,' + u.id + ')">' + t("friends_add") + '</button>' +
+        '</div>';
+      }).join("");
+    });
+}
+
+function loadRequests() {
+  fetch("/api/get-friend-requests?email=" + encodeURIComponent(email))
+    .then(r=>r.json())
+    .then(data => {
+      const list = document.getElementById("requestsList");
+      const badge = document.getElementById("requestsTab").querySelector(".badge");
+      if(badge) badge.textContent = data.length;
+      if(!data.length){
+        list.innerHTML = '<div class="no-users" data-i18n="friends_no_requests">No pending requests</div>';
+        return;
+      }
+      list.innerHTML = data.map(u => {
+        const initial = u.name.charAt(0).toUpperCase();
+        const avatar = u.photo ? '<img src="' + u.photo + '" alt="">' : initial;
+        return '<div class="user-row" id="req-'+u.reqId+'">' +
+          '<div class="avatar-sm">' + avatar + '</div>' +
+          '<div class="user-info"><div class="uname">' + u.name + '</div><div class="uemail">' + (u.username ? "@" + u.username : u.email) + '</div></div>' +
+          '<div class="btn-group">' +
+          '<button class="btn btn-accept" onclick="acceptRequest(this,' + u.id + ')">' + t("friends_accept") + '</button>' +
+          '<button class="btn btn-reject" onclick="rejectRequest(this,' + u.id + ')">' + t("friends_reject") + '</button>' +
+          '</div>' +
+        '</div>';
+      }).join("");
+    });
+}
+
+function addFriend(btn, toUserId) {
+  btn.disabled = true;
+  btn.textContent = t("friends_adding");
+  fetch("/api/send-friend-request", {
+    method: "POST", headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({email, toUserId})
+  })
+  .then(r=>r.json())
+  .then(d => {
+    if(d.error){ alert(d.error); btn.disabled = false; btn.textContent = t("friends_add"); return; }
+    btn.className = "btn btn-add done";
+    btn.textContent = t("friends_sent");
+  });
+}
+
+function acceptRequest(btn, fromUserId) {
+  btn.disabled = true;
+  fetch("/api/accept-friend-request", {
+    method: "POST", headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({email, fromUserId})
+  })
+  .then(r=>r.json())
+  .then(d => {
+    if(d.error){ alert(d.error); btn.disabled = false; return; }
+    const row = btn.closest(".user-row");
+    row.style.opacity = "0.3";
+    row.innerHTML = '<div style="color:#22c55e;font-size:13px;padding:4px">' + t("friends_accepted") + '</div>';
+    setTimeout(() => row.remove(), 1500);
+    loadRequests();
+  });
+}
+
+function rejectRequest(btn, fromUserId) {
+  btn.disabled = true;
+  fetch("/api/reject-friend-request", {
+    method: "POST", headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({email, fromUserId})
+  })
+  .then(r=>r.json())
+  .then(() => {
+    const row = btn.closest(".user-row");
+    row.style.opacity = "0.3";
+    setTimeout(() => row.remove(), 300);
+  });
+}
+
+function searchUsers(q) {
+  const list = document.getElementById("searchResults");
+  if(!q.trim()){ list.innerHTML = '<div class="no-users">Type to search</div>'; return; }
+  fetch("/api/search-users?email=" + encodeURIComponent(email) + "&q=" + encodeURIComponent(q))
+    .then(r=>r.json())
+    .then(data => {
+      if(!data.length){ list.innerHTML = '<div class="no-users" data-i18n="friends_no_results">No users found</div>'; return; }
+      list.innerHTML = data.map(u => {
+        const initial = u.name.charAt(0).toUpperCase();
+        const avatar = u.photo ? '<img src="' + u.photo + '" alt="">' : initial;
+        return '<div class="user-row">' +
+          '<div class="avatar-sm">' + avatar + '</div>' +
+          '<div class="user-info"><div class="uname">' + u.name + '</div><div class="uemail">' + (u.username ? "@" + u.username : u.email) + '</div></div>' +
+          '<button class="btn btn-add" data-id="' + u.id + '" onclick="addFriend(this,' + u.id + ')">' + t("friends_add") + '</button>' +
+        '</div>';
+      }).join("");
+    });
+}
+
+function switchTab(tab, btn) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  btn.classList.add("active");
+  document.querySelectorAll("[id$=Panel]").forEach(p => p.style.display = "none");
+  document.getElementById(tab + "Panel").style.display = "block";
+  if(tab === "requests") loadRequests();
+}
+
+function skip() { window.location.href = "username.html"; }
+function next() { window.location.href = "username.html"; }
+
+loadSuggestions();
+loadRequests();
+buildLangDropdown("langContainer");
+applyTranslation();
+</script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Choose Username - Snafix</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="translations.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
+body{min-height:100vh;background:#0b1220;color:white;display:flex;align-items:center;justify-content:center;padding:20px}
+.bg{position:fixed;inset:0;background:linear-gradient(135deg,#08111f,#0f172a)}
+.bg::before,.bg::after{content:"";position:absolute;border-radius:50%;filter:blur(90px);animation:blobMove 10s ease-in-out infinite}
+.bg::before{width:380px;height:380px;background:#2563eb;left:-120px;top:-120px}
+.bg::after{width:320px;height:320px;background:#60a5fa;right:-80px;bottom:-80px;animation-delay:2s}
+@keyframes blobMove{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
+.logo{position:fixed;top:24px;left:40px;font-size:30px;font-weight:800;letter-spacing:2px;z-index:5}
+.logo .w{color:#fff}.logo .b{color:#2563eb}
+.card{position:relative;overflow:hidden;width:440px;background:rgba(255,255,255,.08);backdrop-filter:blur(25px);border-radius:28px;border:1px solid rgba(255,255,255,.12);padding:36px;z-index:2;box-shadow:0 25px 60px rgba(0,0,0,.25);text-align:center}
+.card::before{content:"";position:absolute;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(96,165,250,.28),transparent 70%);top:-60px;right:-60px}
+.card h2{font-size:24px;margin-bottom:4px;position:relative;z-index:2}
+.card .sub{color:#94a3b8;font-size:14px;margin-bottom:20px;position:relative;z-index:2}
+.input-wrap{position:relative;z-index:2}
+.input-wrap .at{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:18px;font-weight:700}
+.card input{width:100%;padding:16px 16px 16px 40px;border-radius:14px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:white;font-size:18px;outline:none;transition:.3s}
+.card input:focus{border-color:#60a5fa;box-shadow:0 0 20px rgba(96,165,250,.2)}
+.status{font-size:13px;margin-top:8px;min-height:22px;position:relative;z-index:2}
+.status.available{color:#22c55e}
+.status.taken{color:#ef4444}
+.preview{display:flex;align-items:center;justify-content:center;gap:10px;margin:16px 0;position:relative;z-index:2}
+.preview .pill{background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.2);border-radius:20px;padding:8px 18px;font-size:14px;color:#cbd5e1}
+.checking{color:#94a3b8;font-size:13px;position:relative;z-index:2}
+.btn-group{display:flex;gap:10px;margin-top:18px;position:relative;z-index:2}
+.btn{flex:1;padding:14px;border:none;border-radius:14px;cursor:pointer;font-weight:700;font-size:15px;transition:.35s}
+.btn-primary{color:white;background:linear-gradient(135deg,#2563eb,#60a5fa)}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(37,99,235,.35)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,.15);color:#cbd5e1}
+.btn-ghost:hover{background:rgba(255,255,255,.05)}
+@media(max-width:500px){.card{padding:24px;margin:0 10px}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="logo"><span class="w">Sna</span><span class="b">fix</span></div>
+<div class="card">
+    <h2 data-i18n="username_title">Choose your username</h2>
+    <p class="sub" data-i18n="username_sub">This will be your unique identity on Snafix</p>
+    <div class="input-wrap">
+        <span class="at">@</span>
+        <input id="usernameInput" type="text" maxlength="20" placeholder="username" autocomplete="off" oninput="checkUsername(this.value)">
+    </div>
+    <div class="status" id="status"></div>
+    <div class="preview" id="preview"></div>
+    <div class="btn-group">
+        <button class="btn btn-ghost" onclick="skip()">Skip</button>
+        <button class="btn btn-primary" id="saveBtn" onclick="save()" disabled>Save & Continue</button>
+    </div>
+</div>
+<script>
+const email = localStorage.getItem("sn_user") ? JSON.parse(localStorage.getItem("sn_user")).email : null;
+if(!email) window.location.href = "index.html";
+
+let available = false;
+let timer = null;
+
+function checkUsername(val) {
+    const status = document.getElementById("status");
+    const preview = document.getElementById("preview");
+    const saveBtn = document.getElementById("saveBtn");
+    saveBtn.disabled = true;
+    available = false;
+
+    if(!val || val.length < 3){
+        status.textContent = "";
+        status.className = "status";
+        preview.innerHTML = "";
+        return;
+    }
+
+    if(!/^[a-zA-Z0-9_]+$/.test(val)){
+        status.textContent = "Only letters, numbers and underscore";
+        status.className = "status taken";
+        return;
+    }
+
+    status.textContent = "Checking...";
+    status.className = "status checking";
+    preview.innerHTML = '<div class="pill">@' + val + '</div>';
+
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+        fetch("/api/check-username", {
+            method: "POST", headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({email, username: val})
+        })
+        .then(r=>r.json())
+        .then(d => {
+            if(d.available){
+                status.textContent = "Available!";
+                status.className = "status available";
+                available = true;
+                saveBtn.disabled = false;
+            } else {
+                status.textContent = d.message || "Username taken";
+                status.className = "status taken";
+                available = false;
+            }
+        });
+    }, 400);
+}
+
+function save() {
+    const username = document.getElementById("usernameInput").value.trim();
+    if(!available || !username) return;
+    fetch("/api/save-username", {
+        method: "POST", headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({email, username})
+    })
+    .then(r=>r.json())
+    .then(d => {
+        if(d.error) return alert(d.error);
+        let user = JSON.parse(localStorage.getItem("sn_user"));
+        user.username = username;
+        localStorage.setItem("sn_user", JSON.stringify(user));
+        window.location.href = "profile-photo.html";
+    });
+}
+
+function skip() {
+    window.location.href = "profile-photo.html";
+}
+</script>
+</body>
+</html>

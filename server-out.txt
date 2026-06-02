@@ -1,0 +1,2 @@
+Snafix server running on http://localhost:3000
+Set SNAFIC_EMAIL_PASS env var to enable email sending.

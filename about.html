@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="page_title_about">About Snafix</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="translations.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
+body{min-height:100vh;background:#0b1220;color:white}
+.bg{position:fixed;inset:0;background:linear-gradient(135deg,#08111f,#0f172a)}
+.bg::before,.bg::after{content:"";position:absolute;border-radius:50%;filter:blur(90px);animation:blobMove 10s ease-in-out infinite}
+.bg::before{width:380px;height:380px;background:#2563eb;left:-120px;top:-120px}
+.bg::after{width:320px;height:320px;background:#60a5fa;right:-80px;bottom:-80px;animation-delay:2s}
+@keyframes blobMove{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
+.logo{position:fixed;top:30px;left:50px;font-size:34px;font-weight:800;letter-spacing:2px;z-index:5;animation:logoPulse 4s ease-in-out infinite}
+.logo .w{color:#fff}.logo .b{color:#2563eb}
+@keyframes logoPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.85;transform:scale(.97)}}
+.wrapper{position:relative;z-index:2;max-width:800px;margin:0 auto;padding:100px 30px 30px}
+.content{background:rgba(255,255,255,.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:40px}
+.content h1{font-size:36px;margin-bottom:20px;background:linear-gradient(90deg,#60a5fa,#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.content p{color:#cbd5e1;font-size:15px;line-height:1.8;margin-bottom:16px}
+.back{display:inline-flex;align-items:center;gap:6px;color:#94a3b8;text-decoration:none;font-size:14px;margin-bottom:24px;transition:.3s}
+.back:hover{color:#60a5fa}
+.footer{margin-top:30px;padding:20px 0;text-align:left;color:#94a3b8;font-size:13px;width:100%}
+.footer a{color:#60a5fa;text-decoration:none}
+.footer a:hover{text-decoration:underline}
+.footer .links{display:flex;flex-wrap:wrap;align-items:center;margin-bottom:12px;justify-content:space-between;width:100%}
+.footer .links a{color:#cbd5e1;text-decoration:none;font-size:13px;padding:4px 6px}
+.footer .links a:first-child{padding-left:0}
+.footer .links a:last-child{padding-right:0}
+.footer .links a:hover{text-decoration:underline}
+.footer .dev{margin-top:8px;color:#64748b}
+.footer .dev strong{color:#cbd5e1}
+@media(max-width:600px){.wrapper{padding:80px 16px 20px}.content{padding:24px}.content h1{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="logo"><span class="w">Sna</span><span class="b">fix</span></div>
+<div class="wrapper">
+<div class="content">
+<a href="index.html" class="back" data-i18n="back">← Back to Snafix</a>
+<h1 data-i18n="about_heading">About Snafix</h1>
+<p data-i18n="about_p1">Snafix is a next-generation digital platform designed to redefine how people interact, communicate, and experience technology in their daily lives. It is built as a unified ecosystem that combines social networking, instant messaging, media sharing, artificial intelligence, and location-based services into one seamless environment. Unlike traditional applications that focus on a single purpose, Snafix aims to integrate multiple digital experiences into a single, intelligent, and highly optimized system.</p>
+<p data-i18n="about_p2">The vision behind Snafix is to create a platform where users can not only consume content but also actively participate in building meaningful digital connections. In today's fast-paced world, users often switch between multiple apps for communication, entertainment, navigation, and productivity. Snafix solves this fragmentation by bringing everything together into one unified experience that is smooth, fast, and visually engaging.</p>
+<p data-i18n="about_p3">At its foundation, Snafix is built with modern web and application technologies that prioritize performance, scalability, and user experience. Every component of the platform is carefully designed to ensure responsiveness across all devices, including mobile phones, tablets, and desktop systems. The architecture follows modular principles, allowing continuous expansion and improvement without affecting existing functionality.</p>
+<p data-i18n="about_p4">One of the key strengths of Snafix is its focus on user-centric design. The interface is minimal yet powerful, featuring smooth animations, modern typography, and intuitive navigation. The goal is to make the platform feel natural and easy to use, even for first-time users. Every interaction is designed to provide feedback, clarity, and engagement, ensuring users always feel connected to the system.</p>
+<p data-i18n="about_p5">Snafix also integrates artificial intelligence features that enhance personalization and smart assistance. These AI-driven systems help users discover relevant content, improve communication efficiency, and automate certain tasks to save time. As technology evolves, Snafix continues to adopt new innovations to stay ahead of user expectations.</p>
+<p data-i18n="about_p6">The platform is also built with strong scalability in mind. As the user base grows, Snafix is designed to handle increased traffic, data processing, and feature expansion without compromising performance. Cloud-based infrastructure and optimized backend systems ensure reliability and speed across all regions.</p>
+<p data-i18n="about_p7">Beyond technology, Snafix is also about community. It encourages users to connect, share ideas, and express creativity in meaningful ways. Whether it is through messaging, content sharing, or interactive features, the platform promotes engagement and collaboration among users from different backgrounds and cultures.</p>
+<p data-i18n="about_p8">In conclusion, Snafix is more than just an application—it is a complete digital ecosystem designed for the future. It combines technology, design, intelligence, and community into a single platform that aims to transform how people experience the digital world.</p>
+</div>
+<div class="footer">
+<div class="links">
+<a href="index.html" class="footer-brand" style="font-weight:700;background:linear-gradient(90deg,#2563eb 50%,#ffffff 50%);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Snafix</a>
+<a href="about.html" data-i18n="about">About</a>
+<a href="blog.html" data-i18n="blog">Blog</a>
+<a href="privacy.html" data-i18n="privacy">Privacy</a>
+<a href="terms.html" data-i18n="terms">Terms</a>
+<a href="locations.html" data-i18n="locations">Locations</a>
+<a href="contact-uploading.html" data-i18n="contact_upload">Contact Uploading &amp; Non-Users</a>
+<a href="verified.html" data-i18n="verified">Snafix Verified</a>
+<a href="language.html" data-i18n="language_label">English</a>
+</div>
+<a href="mailto:snafic.official@gmail.com">snafic.official@gmail.com</a>
+<div class="dev"><span data-i18n="developed">Developed by</span> <strong data-i18n="sarobar">Sarobar Adhikari</strong></div>
+<div id="langContainer" style="margin-top:12px"></div>
+</div>
+</div>
+<script>buildLangDropdown("langContainer");applyTranslation();</script>
+</body>
+</html>

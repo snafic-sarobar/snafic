@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify Snafix</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="translations.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
+body{min-height:100vh;background:#0b1220;display:flex;align-items:center;justify-content:center;color:white}
+.bg{position:fixed;inset:0;background:linear-gradient(135deg,#08111f,#0f172a)}
+.bg::before,.bg::after{content:"";position:absolute;border-radius:50%;filter:blur(90px);animation:blobMove 10s ease-in-out infinite}
+.bg::before{width:380px;height:380px;background:#2563eb;left:-120px;top:-120px}
+.bg::after{width:320px;height:320px;background:#60a5fa;right:-80px;bottom:-80px;animation-delay:2s}
+@keyframes blobMove{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
+.logo{position:fixed;top:30px;left:50px;font-size:34px;font-weight:800;letter-spacing:2px;z-index:5;animation:logoPulse 4s ease-in-out infinite}
+.logo .w{color:#fff}.logo .b{color:#2563eb}
+@keyframes logoPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.85;transform:scale(.97)}}
+.verify-card{position:relative;overflow:hidden;width:440px;background:rgba(255,255,255,.08);backdrop-filter:blur(25px);border-radius:32px;border:1px solid rgba(255,255,255,.12);padding:40px;text-align:center;z-index:2;box-shadow:0 25px 60px rgba(0,0,0,.25)}
+.verify-card::before{content:"";position:absolute;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(96,165,250,.28),transparent 70%);top:-80px;right:-80px}
+.verify-card h2{font-size:30px;margin-bottom:6px;position:relative;z-index:2}
+.verify-card p{color:#94a3b8;font-size:14px;margin-bottom:20px;position:relative;z-index:2}
+.verify-card strong{color:#cbd5e1}
+.code-input{width:100%;padding:18px;border-radius:16px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.05);color:white;font-size:28px;font-weight:700;text-align:center;letter-spacing:10px;outline:none;transition:.3s;position:relative;z-index:2}
+.code-input:focus{border-color:#60a5fa;box-shadow:0 0 20px rgba(96,165,250,.2)}
+.verify-btn{width:100%;padding:16px;border:none;border-radius:16px;margin-top:16px;cursor:pointer;font-weight:700;font-size:16px;color:white;background:linear-gradient(135deg,#2563eb,#60a5fa);transition:.35s;position:relative;z-index:2}
+.verify-btn:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(37,99,235,.35)}
+.resend{background:transparent;border:none;color:#60a5fa;cursor:pointer;font-size:13px;margin-top:14px;text-decoration:underline;position:relative;z-index:2}
+.resend:hover{color:#93c5fd}
+.error{color:#ef4444;font-size:13px;margin-top:10px;min-height:20px;position:relative;z-index:2}
+.success{color:#22c55e;font-size:13px;margin-top:10px;min-height:20px;position:relative;z-index:2}
+.back-link{display:block;margin-top:16px;color:#64748b;font-size:13px;position:relative;z-index:2}
+.back-link a{color:#60a5fa;text-decoration:none}
+.status-bar{position:relative;z-index:2;margin:20px 0;text-align:left}
+.status-bar label{font-size:12px;color:#64748b;display:block;margin-bottom:4px}
+.divider{height:1px;background:rgba(255,255,255,.08);margin:20px 0;position:relative;z-index:2}
+.skip-section{position:relative;z-index:2}
+.skip-section p{font-size:12px;color:#64748b;margin-bottom:8px}
+.reminder-grid{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:6px}
+.reminder-btn{padding:10px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:#cbd5e1;cursor:pointer;font-size:13px;transition:.3s}
+.reminder-btn:hover{background:rgba(96,165,250,.15);border-color:#60a5fa;color:white}
+.reminder-btn.active{background:rgba(96,165,250,.15);border-color:#60a5fa;color:white}
+.skip-link{background:transparent;border:none;color:#64748b;cursor:pointer;font-size:12px;text-decoration:underline;margin-top:6px;transition:.3s}
+.skip-link:hover{color:#94a3b8}
+@media(max-width:500px){.verify-card{padding:24px;margin:0 16px}.verify-card h2{font-size:24px}.code-input{font-size:22px;letter-spacing:6px}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="logo"><span class="w">Sna</span><span class="b">fix</span></div>
+
+<div class="verify-card">
+    <h2 data-i18n="verify_title">Enter the confirmation code</h2>
+    <p data-i18n="verify_desc">To confirm your account, enter the 6-digit code we sent to</p>
+    <p style="font-size:13px;color:#60a5fa;margin:-10px 0 6px;font-weight:600;word-break:break-all" id="displayEmail"></p>
+    <p style="font-size:11px;color:#64748b;margin:0 0 20px">(Check your email inbox or the server console)</p>
+
+    <div class="status-bar">
+        <label id="statusLabel" data-i18n="verify_status">Confirmation code</label>
+        <input class="code-input" id="codeInput" type="text" maxlength="6" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" placeholder="000000">
+    </div>
+
+    <div id="codeDisplay" style="display:none;position:relative;z-index:2;background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.25);border-radius:12px;padding:12px;margin-bottom:12px;font-size:13px;color:#93c5fd">
+        Your verification code: <strong id="codeValue" style="font-size:22px;letter-spacing:6px;color:#60a5fa"></strong>
+    </div>
+
+    <button class="verify-btn" id="verifyBtn" onclick="verify()" data-i18n="verify_btn">Confirm</button>
+    <button class="resend" onclick="resend()" data-i18n="resend_btn">Resend code</button>
+
+    <div class="error" id="errorMsg"></div>
+    <div class="success" id="successMsg"></div>
+
+    <div class="divider"></div>
+
+    <div class="skip-section">
+        <p>Not now? Set a reminder or skip</p>
+        <div class="reminder-grid">
+            <button class="reminder-btn" onclick="skipWithReminder(3600000)">In 1h</button>
+            <button class="reminder-btn" onclick="skipWithReminder(21600000)">In 6h</button>
+            <button class="reminder-btn" onclick="skipWithReminder(86400000)">Tomorrow</button>
+        </div>
+        <button class="skip-link" onclick="skipNow()">Skip for now</button>
+    </div>
+
+    <div class="back-link"><a href="index.html" data-i18n="back_login">Back to Login</a></div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const email = params.get("email") || "";
+const redirect = params.get("redirect") || "";
+const initialCode = params.get("code") || "";
+
+document.getElementById("displayEmail").textContent = email;
+
+if(initialCode){
+    document.getElementById("codeDisplay").style.display = "block";
+    document.getElementById("codeValue").textContent = initialCode;
+    document.getElementById("codeInput").value = initialCode;
+}
+
+function goAway(){
+    const target = redirect || "session.html";
+    window.location.href = target;
+}
+
+function verify(){
+    const code = document.getElementById("codeInput").value.trim();
+    const error = document.getElementById("errorMsg");
+    const success = document.getElementById("successMsg");
+    error.textContent = "";
+    success.textContent = "";
+
+    if(code.length !== 6 || isNaN(code)){
+        error.textContent = "Please enter a valid 6-digit code";
+        return;
+    }
+
+    fetch("/api/verify", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({email, code})
+    })
+    .then(r => r.json())
+    .then(data => {
+        if(data.error){
+            error.textContent = data.error;
+            return;
+        }
+        success.textContent = "Email verified! Redirecting...";
+        setTimeout(goAway, 1500);
+    })
+    .catch(() => {
+        error.textContent = "Server error. Try again.";
+    });
+}
+
+function resend(){
+    const error = document.getElementById("errorMsg");
+    const success = document.getElementById("successMsg");
+    error.textContent = "";
+    success.textContent = "";
+
+    fetch("/api/resend-code", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({email})
+    })
+    .then(r => r.json())
+    .then(data => {
+        if(data.error) error.textContent = data.error;
+        else {
+            success.textContent = "Code resent!";
+            if(data.code){
+                document.getElementById("codeDisplay").style.display = "block";
+                document.getElementById("codeValue").textContent = data.code;
+                document.getElementById("codeInput").value = data.code;
+            }
+        }
+    })
+    .catch(() => {
+        error.textContent = "Server error";
+    });
+}
+
+function skipWithReminder(ms){
+    localStorage.setItem("verifyReminderAt", String(Date.now() + ms));
+    goAway();
+}
+
+function skipNow(){
+    localStorage.setItem("verifyReminderAt", "never");
+    goAway();
+}
+
+applyTranslation();
+</script>
+</body>
+</html>

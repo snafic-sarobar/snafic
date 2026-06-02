@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title data-i18n="page_title_session">Snafic — Welcome</title>
+<script src="translations.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Inter,sans-serif;
+}
+
+body{
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  background: radial-gradient(circle at top,#0b1220,#05070f);
+  overflow:hidden;
+}
+
+body::before{
+  content:"";
+  position:absolute;
+  width:400px;
+  height:400px;
+  background:#2563eb;
+  filter:blur(120px);
+  opacity:.25;
+  top:-100px;
+  left:-100px;
+  animation:move 8s infinite alternate;
+}
+
+body::after{
+  content:"";
+  position:absolute;
+  width:400px;
+  height:400px;
+  background:#60a5fa;
+  filter:blur(120px);
+  opacity:.2;
+  bottom:-120px;
+  right:-120px;
+  animation:move2 10s infinite alternate;
+}
+
+@keyframes move{
+  from{transform:translate(0,0);}
+  to{transform:translate(80px,40px);}
+}
+
+@keyframes move2{
+  from{transform:translate(0,0);}
+  to{transform:translate(-80px,-40px);}
+}
+
+.card{
+  width:360px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.12);
+  backdrop-filter:blur(20px);
+  border-radius:22px;
+  padding:28px;
+  text-align:center;
+  color:white;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+  animation:float 4s ease-in-out infinite;
+  position:relative;
+  z-index:2;
+}
+
+@keyframes float{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-10px);}
+}
+
+.avatar{
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  margin:0 auto 12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  font-weight:800;
+  background:linear-gradient(135deg,#2563eb,#60a5fa);
+  box-shadow:0 0 25px rgba(96,165,250,.4);
+}
+
+h1{
+  font-size:24px;
+  margin-bottom:6px;
+}
+
+.email{
+  font-size:13px;
+  color:#cbd5e1;
+  margin-bottom:18px;
+}
+
+.primary{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  font-weight:800;
+  background:linear-gradient(135deg,#2563eb,#60a5fa);
+  color:white;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.primary:hover{
+  transform:scale(1.03);
+  box-shadow:0 10px 25px rgba(37,99,235,.4);
+}
+
+.secondary{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.2);
+  background:transparent;
+  color:#cbd5e1;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.secondary:hover{
+  background:rgba(255,255,255,.05);
+}
+
+footer{
+  margin-top:20px;
+  font-size:12px;
+  color:#6b7280;
+  text-align:center;
+  z-index:2;
+}
+
+footer ul{
+  display:flex;
+  gap:12px;
+  list-style:none;
+  justify-content:center;
+  margin-bottom:6px;
+}
+
+footer a{
+  color:#6b7280;
+  text-decoration:none;
+}
+
+footer a:hover{
+  color:#cbd5e1;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <div class="avatar" id="avatar">S</div>
+
+  <h1 id="title" data-i18n="session_welcome">Welcome Back</h1>
+  <div class="email" id="email">user@example.com</div>
+
+  <button class="primary" onclick="continueUser()" data-i18n="session_continue">
+    Continue to Snafix
+  </button>
+
+  <button class="secondary" onclick="logout()" data-i18n="session_logout">
+    Logout
+  </button>
+
+</div>
+
+<footer>
+  <ul>
+    <li><a href="about.html" data-i18n="about">About</a></li>
+    <li><a href="blog.html" data-i18n="blog">Blog</a></li>
+    <li><a href="privacy.html" data-i18n="privacy">Privacy</a></li>
+    <li><a href="terms.html" data-i18n="terms">Terms</a></li>
+    <li><a href="contact-uploading.html" data-i18n="contact_upload">Contact</a></li>
+  </ul>
+  <div id="langDisplay" style="color:#6b7280;font-size:12px">🌐 English (UK)</div>
+</footer>
+
+<script>
+let user = JSON.parse(localStorage.getItem("sn_user"));
+
+if(!user){
+  window.location.href = "index.html";
+}
+
+const firstVisit = !localStorage.getItem("sn_session_seen");
+
+document.getElementById("title").innerText = firstVisit
+  ? "👋 Welcome to SNAFIC"
+  : "👋 Welcome Back";
+
+document.getElementById("email").innerText = user.email;
+document.getElementById("avatar").innerText = user.name.charAt(0).toUpperCase();
+
+function continueUser(){
+  localStorage.setItem("sn_session_seen", "1");
+  window.location.href = "home.html";
+}
+
+function logout(){
+  localStorage.removeItem("sn_user");
+  localStorage.removeItem("sn_session_seen");
+  localStorage.removeItem("verifyReminderAt");
+  window.location.href = "index.html";
+}
+
+applyTranslation();
+</script>
+
+</body>
+</html>
