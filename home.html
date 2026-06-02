@@ -455,5 +455,21 @@ function logout() {
   window.location.href = "index.html";
 }
 </script>
+<div class="footer" style="margin-top:30px;padding:20px 0;text-align:center;color:#94a3b8;font-size:13px;width:100%;position:relative;z-index:2">
+    <div style="margin-bottom:8px">
+        <span data-i18n="copyright">&copy; 2026 snafic.inc</span>
+        <span style="color:#475569;margin:0 6px">&middot;</span>
+        <a href="mailto:snafic.official@gmail.com" style="color:#60a5fa;text-decoration:none">snafic.official@gmail.com</a>
+    </div>
+    <div>
+        <span data-i18n="developed">Developed by</span>
+        <strong style="color:#cbd5e1">Sarobar Adhikari</strong>
+    </div>
+    <div id="langContainer" style="margin-top:8px;display:inline-block"></div>
+</div>
+<script>
+if (typeof buildLangDropdown === 'function') buildLangDropdown("langContainer");
+if (typeof applyTranslation === 'function') applyTranslation();
+</script>
 </body>
 </html>

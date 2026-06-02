@@ -79,12 +79,7 @@ button{width:100%;border:none;cursor:pointer;font-weight:700;font-family:inherit
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-text{margin-top:12px;font-size:13px;color:#94a3b8}
 
-.footer{position:fixed;bottom:0;left:40px;z-index:5;padding:14px 0;font-size:13px;color:#6b7280}
-.footer a{color:#6b7280;text-decoration:none;transition:color .2s;font-size:13px}
-.footer a:hover{color:#cbd5e1}
-.footer .sep{margin:0 6px;color:#475569}
-#langSelect{font-size:11px;padding:2px 20px 2px 6px;background:transparent;color:#6b7280;border:1px solid transparent;cursor:pointer;appearance:none;-webkit-appearance:none}
-#langSelect:hover{color:#cbd5e1}
+
 
 @media(max-width:900px){
   body{overflow:auto}
@@ -95,7 +90,7 @@ button{width:100%;border:none;cursor:pointer;font-weight:700;font-family:inherit
   .grid{grid-template-columns:1fr}
   .right{padding:20px}
   .heading-wrap .logo{margin-bottom:12px}.heading-wrap .logo img{height:80px}
-  .footer{left:20px}
+  
 }
 </style>
 </head>
@@ -147,16 +142,17 @@ button{width:100%;border:none;cursor:pointer;font-weight:700;font-family:inherit
     </div>
   </div>
 </div>
-<div class="footer">
-  <a href="index.html" class="footer-brand" style="font-weight:700;color:#94a3b8">Snafic</a>
-  <span class="sep">&middot;</span>
-  <a href="about.html" data-i18n="about">About</a>
-  <span class="sep">&middot;</span>
-  <a href="privacy.html" data-i18n="privacy">Privacy</a>
-  <span class="sep">&middot;</span>
-  <a href="terms.html" data-i18n="terms">Terms</a>
-  <span class="sep">&middot;</span>
-  <select id="langSelect" onchange="setLang(this.value)"></select>
+<div class="footer" style="margin-top:30px;padding:20px 0;text-align:center;color:#94a3b8;font-size:13px;width:100%;position:relative;z-index:2">
+    <div style="margin-bottom:8px">
+        <span data-i18n="copyright">&copy; 2026 snafic.inc</span>
+        <span style="color:#475569;margin:0 6px">&middot;</span>
+        <a href="mailto:snafic.official@gmail.com" style="color:#60a5fa;text-decoration:none">snafic.official@gmail.com</a>
+    </div>
+    <div>
+        <span data-i18n="developed">Developed by</span>
+        <strong style="color:#cbd5e1">Sarobar Adhikari</strong>
+    </div>
+    <div id="langContainer" style="margin-top:8px;display:inline-block"></div>
 </div>
 
 <script>
@@ -321,22 +317,8 @@ function logout() {
   localStorage.removeItem("sn_user");
 }
 
-// Build lang dropdown
-function buildDropdown() {
-  const s = document.getElementById("langSelect");
-  s.innerHTML = "";
-  const top = ["en-GB","ne","hi","es","pt-BR","ja","fr"];
-  top.forEach(c => { const o=document.createElement("option"); o.value=c; o.textContent=LANGUAGES[c]; s.appendChild(o); });
-  const rest = Object.keys(LANGUAGES).filter(c => !top.includes(c));
-  if (rest.length) {
-    const g = document.createElement("optgroup"); g.label = "More...";
-    rest.forEach(c => { const o=document.createElement("option"); o.value=c; o.textContent=LANGUAGES[c]; g.appendChild(o); });
-    s.appendChild(g);
-  }
-  s.value = currentLang;
-}
-buildDropdown();
-applyTranslation();
+if (typeof buildLangDropdown === 'function') buildLangDropdown("langContainer");
+if (typeof applyTranslation === 'function') applyTranslation();
 </script>
 </body>
 </html>

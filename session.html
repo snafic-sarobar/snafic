@@ -26,10 +26,7 @@ h1{font-size:24px;margin-bottom:6px}
 .primary:hover{transform:scale(1.03);box-shadow:0 10px 25px rgba(37,99,235,.4)}
 .secondary{width:100%;padding:12px;margin-top:10px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:transparent;color:#cbd5e1;cursor:pointer;transition:.3s}
 .secondary:hover{background:rgba(255,255,255,.05)}
-footer{margin-top:20px;font-size:12px;color:#6b7280;text-align:center;z-index:2}
-footer ul{display:flex;gap:12px;list-style:none;justify-content:center;margin-bottom:6px}
-footer a{color:#6b7280;text-decoration:none}
-footer a:hover{color:#cbd5e1}
+
 </style>
 </head>
 <body>
@@ -40,15 +37,18 @@ footer a:hover{color:#cbd5e1}
   <button class="primary" onclick="continueUser()" data-i18n="session_continue">Continue to Snafic</button>
   <button class="secondary" onclick="logout()" data-i18n="session_logout">Logout</button>
 </div>
-<footer>
-  <ul>
-    <li><a href="about.html" data-i18n="about">About</a></li>
-    <li><a href="blog.html" data-i18n="blog">Blog</a></li>
-    <li><a href="privacy.html" data-i18n="privacy">Privacy</a></li>
-    <li><a href="terms.html" data-i18n="terms">Terms</a></li>
-  </ul>
-  <div id="langDisplay" style="color:#6b7280;font-size:12px">🌐 English (UK)</div>
-</footer>
+<div class="footer" style="margin-top:20px;padding:20px 0;text-align:center;color:#94a3b8;font-size:13px;width:100%;position:relative;z-index:2">
+    <div style="margin-bottom:8px">
+        <span data-i18n="copyright">&copy; 2026 snafic.inc</span>
+        <span style="color:#475569;margin:0 6px">&middot;</span>
+        <a href="mailto:snafic.official@gmail.com" style="color:#60a5fa;text-decoration:none">snafic.official@gmail.com</a>
+    </div>
+    <div>
+        <span data-i18n="developed">Developed by</span>
+        <strong style="color:#cbd5e1">Sarobar Adhikari</strong>
+    </div>
+    <div id="langContainer" style="margin-top:8px;display:inline-block"></div>
+</div>
 
 <script>
 auth.onAuthStateChanged(async (user) => {
@@ -77,6 +77,7 @@ function logout() {
   window.location.href = "index.html";
 }
 applyTranslation();
+if (typeof buildLangDropdown === 'function') buildLangDropdown("langContainer");
 </script>
 </body>
 </html>
