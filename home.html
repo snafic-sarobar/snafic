@@ -21,10 +21,23 @@ a{text-decoration:none;color:inherit}
 
 .nav-left{display:flex;align-items:center;gap:18px}
 .logo{font-size:30px;font-weight:800;background:linear-gradient(90deg,#2563eb,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.search-box{width:230px;height:42px;display:flex;align-items:center;gap:10px;padding:0 14px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.06)}
+.search-box{width:230px;height:42px;display:flex;align-items:center;gap:10px;padding:0 14px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.06);position:relative}
 .search-box input{width:100%;border:none;outline:none;background:none;color:white;font-size:14px}
 .search-box input::placeholder{color:#475569}
 .search-box i{color:#64748b;font-size:14px}
+.search-dropdown{position:absolute;top:48px;left:0;width:100%;min-width:280px;background:#141d2b;border:1px solid rgba(255,255,255,.1);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.5);max-height:320px;overflow-y:auto;display:none;z-index:1001}
+.search-dropdown.open{display:block}
+.search-dropdown::-webkit-scrollbar{width:4px}
+.search-dropdown::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:4px}
+.search-item{display:flex;align-items:center;gap:12px;padding:10px 14px;cursor:pointer;transition:.15s}
+.search-item:hover{background:rgba(255,255,255,.06)}
+.search-item .si-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#7c3aed);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:12px;flex-shrink:0}
+.search-item .si-info{flex:1;min-width:0}
+.search-item .si-name{font-size:13px;font-weight:600;color:white}
+.search-item .si-user{font-size:11px;color:#64748b}
+.search-item .si-add{width:30px;height:30px;border:none;border-radius:8px;background:rgba(37,99,235,.15);color:#60a5fa;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0}
+.search-item .si-add:hover{background:rgba(37,99,235,.25)}
+.search-empty{padding:20px;text-align:center;color:#64748b;font-size:13px}
 
 .nav-center{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px}
 .nav-link{height:48px;padding:0 18px;border:none;background:transparent;border-radius:12px;display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;cursor:pointer;transition:.2s;color:#94a3b8;white-space:nowrap}
@@ -180,9 +193,10 @@ a{text-decoration:none;color:inherit}
 <nav class="navbar">
   <div class="nav-left">
     <div class="logo">Snafic</div>
-    <div class="search-box">
+    <div class="search-box" id="searchBox">
       <i class="fa-solid fa-magnifying-glass"></i>
-      <input placeholder="Search Snafic">
+      <input placeholder="Search Snafic" id="searchInput" oninput="handleSearch(this)" onkeydown="if(event.key==='Enter')searchEnter(this)" onblur="setTimeout(()=>closeSearch(),200)" onfocus="handleSearch(this)">
+      <div class="search-dropdown" id="searchDropdown"></div>
     </div>
   </div>
   <div class="nav-center">
@@ -209,7 +223,7 @@ a{text-decoration:none;color:inherit}
     <div>
       <div class="profile-name" id="panelName">Sarobar Adhikari</div>
       <div class="profile-username" id="panelUsername">@sarobar</div>
-      <div class="view-profile-link" onclick="window.location.href='settings.html'">View Profile</div>
+      <div class="view-profile-link" onclick="window.location.href='profile.html?user=sarobar'">View Profile</div>
     </div>
   </div>
   <div class="divider"></div>
@@ -241,7 +255,7 @@ a{text-decoration:none;color:inherit}
             <div class="suser" id="sideUsername">@sarobar</div>
           </div>
         </div>
-        <button class="view-prof-btn" onclick="window.location.href='settings.html'">View Profile</button>
+        <button class="view-prof-btn" onclick="window.location.href='profile.html?user=sarobar'">View Profile</button>
       </div>
     </div>
     <div class="nav">
@@ -387,6 +401,49 @@ function toggleDropdown() {
 function navTo(btn, page) {
   document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
   btn.classList.add("active");
+}
+
+// Search users
+const SEARCH_USERS = [
+  {name:"Sarobar Adhikari",username:"sarobar",initials:"SA"},
+  {name:"Alex Rivera",username:"alex",initials:"AR"},
+  {name:"Maya Chen",username:"maya",initials:"MC"},
+  {name:"James Wilson",username:"james",initials:"JW"},
+  {name:"Priya Sharma",username:"priya",initials:"PS"},
+  {name:"David Kim",username:"david",initials:"DK"},
+  {name:"Emma Torres",username:"emma",initials:"ET"},
+  {name:"Rachana",username:"rachna",initials:"RC"},
+  {name:"Anita",username:"anita",initials:"AN"}
+];
+
+function handleSearch(input) {
+  const q = input.value.toLowerCase().trim();
+  const dd = document.getElementById("searchDropdown");
+  if (!q) { dd.classList.remove("open"); return; }
+  const results = SEARCH_USERS.filter(u => u.name.toLowerCase().includes(q) || u.username.toLowerCase().includes(q));
+  if (!results.length) { dd.innerHTML = '<div class="search-empty">No users found</div>'; dd.classList.add("open"); return; }
+  dd.innerHTML = results.map(u =>
+    '<div class="search-item" onmousedown="goProfile(\'' + u.username + '\')">' +
+    '<div class="si-avatar">' + u.initials + '</div>' +
+    '<div class="si-info"><div class="si-name">' + u.name + '</div><div class="si-user">@' + u.username + '</div></div>' +
+    '<button class="si-add" onclick="event.stopPropagation();this.textContent=\'✓\'"><i class="fa-solid fa-plus"></i></button></div>'
+  ).join("");
+  dd.classList.add("open");
+}
+
+function searchEnter(input) {
+  const q = input.value.toLowerCase().trim();
+  if (!q) return;
+  const match = SEARCH_USERS.find(u => u.name.toLowerCase().includes(q) || u.username.toLowerCase().includes(q));
+  if (match) window.location.href = "profile.html?user=" + match.username;
+}
+
+function goProfile(username) {
+  window.location.href = "profile.html?user=" + username;
+}
+
+function closeSearch() {
+  document.getElementById("searchDropdown").classList.remove("open");
 }
 
 // Logout
